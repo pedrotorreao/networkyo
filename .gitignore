@@ -1,0 +1,4 @@
+/resources
+/.vscode
+udp-js/node_modules
+*.json
