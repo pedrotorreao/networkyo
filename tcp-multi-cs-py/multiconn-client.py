@@ -29,8 +29,8 @@ def start_connections(host, port, num_conns):
         # asynchronous connects. Once the connection is completed, the socket is
         # ready for reading and writing and is returned by .select().
         sock.connect_ex(server_addr)
-        # To know when the client connection is ready for reading and writing, set
-        # both events with the bitwise OR operator:
+        # To indicate that the client connection is ready for reading and writing,
+        # set both events with the bitwise OR operator:
         events = selectors.EVENT_READ | selectors.EVENT_WRITE
         # Create the data you want to store with the socket using SimpleNamespace
         data = types.SimpleNamespace(
