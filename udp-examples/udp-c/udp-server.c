@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
   // port number to be connected to.
   // note: All ports below 1024 are reserved, so we can set a port above 1024
   // and below 65535 unless they are being used by other programs.
-  int port = 5501;
+  int port = 5550;
   // integer that will represent the file descriptor for the socket:
   int sockfd;
   // structures describing the socket addresses:
