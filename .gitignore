@@ -1,5 +1,6 @@
 /resources
 /.vscode
-udp-js/node_modules
+/udp-examples/udp-js/node_modules
 *.json
 *.pyc
+*node_modules
