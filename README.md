@@ -1,3 +1,5 @@
+# NETWORKING FUNDAMENTALS
+
 ### TABLE OF CONTENTS
 
 - [OSI MODEL](#osi-model-open-systems-interconnection)
@@ -5,7 +7,7 @@
 - [USER DATAGRAM PROTOCOL (UDP)](#user-datagram-protocol-udp)
 - [TRANSMISSION CONTROL PROTOCOL (TCP)](#transmission-control-protocol-tcp)
 
-# NETWORKING FUNDAMENTALS
+---
 
 ## OSI MODEL (OPEN SYSTEMS INTERCONNECTION)
 
@@ -13,7 +15,9 @@ Conceptual model which enables different communication systems to communicate wi
 
 ### Layer 7 - Application (HTTP, FTP, gRPC, SMTP)
 
-Human-computer interaction layer, where applications can access the network services. Software applications like web browsers and email clients rely on the application layer to initiate communications. However, client software applications are not part of the Application Layer; rather this Layer is responsible for the protocols and data manipulation that the software relies on to present meaningful data to the user.
+- **Purpose**: Human-computer interaction layer, where applications can access the network services. Software applications like web browsers and email clients rely on the application layer to initiate communications. However, client software applications are not part of the Application Layer; rather this Layer is responsible for the protocols and data manipulation that the software relies on to present meaningful data to the user.
+- **Examples**: HTTP (Hypertext Transfer Protocol), SMTP (Simple Mail Transfer Protocol).
+- **Devices/Processes**: Web browsers, email clients, file transfer software.
 
 ```
           request
@@ -25,7 +29,9 @@ WEBSITE             APPLICATION LAYER
 
 ### Layer 6 - Presentation (Encoding, Serialization)
 
-Ensures that data is in an usable format and is where data encryption works. Layer responsible for preparing data so that it can be used by the Application layer, i.e. this layer makes the data presentable for applications to consume. It is also responsible for translation (`encoding`), encryption (`encrypt/unencrypt`) and compression (`speed/efficiency`) of data.
+- **Purpose**: Ensures that data is in an usable format and is where data encryption works. Layer responsible for preparing data so that it can be used by the Application layer, i.e. this layer makes the data presentable for applications to consume. It is also responsible for translation (`encoding`), encryption (`encrypt/unencrypt`) and compression (`speed/efficiency`) of data.
+- **Examples**: SSL/TLS encryption, data compression.
+- **Devices/Processes**: Encryption/decryption software, compression/decompression. algorithms.
 
 ```
 ENCRYPTION +--------> COMPRESSION +--------> TRANSLATION
@@ -33,11 +39,16 @@ ENCRYPTION +--------> COMPRESSION +--------> TRANSLATION
 
 ### Layer 5 - Session (Connection establishment, TLS)
 
-Maintains connections and is responsible for controlling ports and sessions. The time between the opening and closing of a connection is known as session. This Layer also ensures that the session stays open long enough to transfer all the data being exchanged, and finishes the session to avoid wasting resources. The session layer also synchronizes data tranfers with checkpoints. For example, if a `100MB` file is being transferred, the Session Layer could set a checkpoint every `5MB`. This way, in the event that some error happens during the transference when `58MB` have already been transferred, the session could be resumed from the last checkpoint, i.e. `55MB`, and only `45MB` would be left to transfer instead of having to transfer the whole file again.
+- **Purpose**: Maintains connections and is responsible for controlling ports and sessions. The time between the opening and closing of a connection is known as session. This Layer also ensures that the session stays open long enough to transfer all the data being exchanged, and finishes the session to avoid wasting resources. The session layer also synchronizes data tranfers with checkpoints.
+  - For example, if a `100MB` file is being transferred, the Session Layer could set a checkpoint every `5MB`. This way, in the event that some error happens during the transference when `58MB` have already been transferred, the session could be resumed from the last checkpoint, i.e. `55MB`, and only `45MB` would be left to transfer instead of having to transfer the whole file again.
+- **Examples**: Session management.
+- **Devices/Processes**: Session management software libraries, application-level gateways (ALGs).
 
 ### Layer 4 - Transport (UDP, TCP)
 
-Transmits data using transmission protocols such as TCP and UDP. Layer responsible for end-to-end communication between two devices. This includes taking data from the Session Layer and breaking it up into chunks called _**segments**_ before sending it to the Network layer. The Transport layer on the receiving end is responsible for reassembling the _**segments**_ into data that the Session layer can consume. This layer also performs flow control and error control. Flow control determines an optimal speed of transmission to ensure that one device do not overwhelm the other. Error control makes sure that the data received is complete, and request a retransmission if it isn't.
+- **Purpose**: Transmits data using transmission protocols such as TCP and UDP. Layer responsible for end-to-end communication between two devices. This includes taking data from the Session Layer and breaking it up into chunks called _**segments**_ before sending it to the Network layer. The Transport layer on the receiving end is responsible for reassembling the _**segments**_ into data that the Session layer can consume. This layer also performs flow control and error control. Flow control determines an optimal speed of transmission to ensure that one device do not overwhelm the other. Error control makes sure that the data received is complete, and request a retransmission if it isn't.
+- **Examples**: TCP (Transmission Control Protocol), UDP (User Datagram Protocol) segments.
+- **Devices/Processes**: Firewalls, load balancers.
 
 ```
 SEGMENTATION +--------> TRANSPORT +--------> REASSEMBLY
@@ -45,19 +56,39 @@ SEGMENTATION +--------> TRANSPORT +--------> REASSEMBLY
 
 ### Layer 3 - Network (IP - Internet Protocol)
 
-Decides which physical path the data will take. It is responsible for facilitating data transfer between two different networks. If the two devices communicating are on the same network, then the Network layer is unnecessary. This layer breaks up _**segments**_ from the Transport layer into smaller units called **_packets_** on the sender's device and reassembles them on the receiver's device. It also finds the best physical path for the data to reach its destination, which is knows as **routing**.
+- **Purpose**: Decides which physical path the data will take. It is responsible for facilitating data transfer between two different networks. If the two devices communicating are on the same network, then the Network layer is unnecessary. This layer breaks up _**segments**_ from the Transport layer into smaller units called **_packets_** on the sender's device and reassembles them on the receiver's device. It also finds the best physical path for the data to reach its destination, which is known as **routing**.
+- **Examples**: IP (Internet Protocol) packets.
+- **Devices/Processes**: Routers, layer 3 switches.
 
 ### Layer 2 - Datalink (Frames, MAC Address)
 
-Defines the format of the data in the network. Similar to the Network layer, except that the Datalink layer facilitates data transfer between two devices on the same network. It takes packets from the Network layer and breaks them into smaller pieces called **_frames_**. Also, it is responsible from flow control and error control in intra-network communication.
+- **Purpose**: Defines the format of the data in the network. Similar to the Network layer, except that the Datalink layer facilitates data transfer between two devices on the same network, i.e. it is responsible for the reliable transmission of data between directly connected nodes on a local network. It takes _**packets**_ from the Network layer and breaks them into smaller pieces called **_frames_**. Also, it is responsible from flow control and error detection in intra-network communication.
+- **Examples**: Ethernet frames, MAC (Media Access Control) addresses.
+- **Devices/Processes**: Network switches, network interface cards (NICs).
 
-### Layer 1 - Physical (Electric signals, fiber, radio waves)
+### Layer 1 - Physical (Electric signals, fiber optics, radio waves)
 
-Transmits raw bit streams over the physical medium. It includes the physical equipment involved in the data transfer, such as cables and switches. This is also the layer where data gets converted into a bit stream. The Physical layer of both devices must also agree on a signal convention so that the `1`s can be distinguished from the `0`s on both devices.
+- **Purpose**: Transmits raw bit streams over the physical medium. It includes the physical equipment involved in the data transfer, such as cables, switches and connectors. This is also the layer where data gets converted into a bit stream. The Physical layer of both devices must also agree on a signal convention so that the `1`s can be distinguished from the `0`s on both devices (e.g., voltage levels).
+- **Examples**: Ethernet cables, fiber optics, wireless radio waves.
+- **Devices/Processes**: Network cables, switches, repeaters, hubs.
+
+### Summary
+
+| **LAYER** | **OUTPUT** | **EXAMPLE** |
+| :-: | :-: | :-: |
+| **7- APPLICATION** | APPLICATION DATA AND MESSAGES | WEB BROWSERS, EMAIL CLIENTS, FTP, HTTP |
+| **6- PRESENTATION** | TRANSLATED, ENCRYPTED, OR COMPRESSED DATA | SSL/TLS ENCRYPTION, IMAGE COMPRESSING |
+| **5- SESSION** | CONNECTION ESTABLISHMENT, MAINTENANCE AND TERMINATION | RPC (REMOTE PROCEDURE CALL) |
+| **4- TRANSPORT** | SEGMENTS OR DATAGRAMS | PROXY, FIREWALL, LOAD BALANCERS |
+| **3- NETWORK** | PACKETS WITH IP ADDRESSES | ROUTERS, LAYER 3 SWITCHES |
+| **2- DATA LINK** | FRAMES WITH MAC ADDRESSES | ETHERNET SWITCHES, NICs |
+| **1- PHYSICAL** | RAW BINARY DATA BITS | RADIO WAVES (WI-FI), ELECTRIC SIGNAL (ETHERNET CABLES), LIGHT (FIBER OPTICS) |
 
 [TABLE OF CONTENTS](#table-of-contents)
 
 # INTERNET PROTOCOL (IP)
+
+The Internet Protocol (IP) is a set of rules and conventions that govern the routing and addressing of data packets in computer networks, enabling data to be transmitted and received across interconnected networks. It ensures that data packets are correctly directed from the source to the destination based on unique numerical addresses assigned to devices on the network and it also includes mechanisms for error handling, fragmentation, and reassembly of data packets to facilitate reliable communication between devices over diverse network infrastructures.
 
 ... [TABLE OF CONTENTS](#table-of-contents)
 
@@ -66,6 +97,14 @@ Transmits raw bit streams over the physical medium. It includes the physical equ
 ... [TABLE OF CONTENTS](#table-of-contents)
 
 # TRANSMISSION CONTROL PROTOCOL (TCP)
+
+TCP is a layer 4 (Transport) protocol, so it has the ability to address processes in a host using ports. Also, unlike UDP which just sends data, TCP _controls_ the transmission of the data. TCP requires handshake to complete a connection.
+
+connection -> session -> knowledge between C/S -> memory -> state -> hs required
+
+- flow control
+- ordered packages
+- guaranteed delivery
 
 ... [TABLE OF CONTENTS](#table-of-contents)
 
@@ -140,8 +179,10 @@ Mechanisms provided by an operating system for processes to manage shared data. 
 
 # REFERENCES
 
+- [Internet Protocol - IP](https://www.cloudflare.com/learning/network-layer/internet-protocol/)
 - [Socket Programming in Python (Guide)](https://realpython.com/python-sockets/)
 - [Berkeley sockets](https://en.wikipedia.org/wiki/Berkeley_sockets)
 - [Unix domain socket](https://en.wikipedia.org/wiki/Unix_domain_socket)
+- [Unix Socket Tutorial](https://www.tutorialspoint.com/unix_sockets/index.htm)
 - [Inter-process communication](https://en.wikipedia.org/wiki/Inter-process_communication)
 - [OSI Model](https://osi-model.com/)
