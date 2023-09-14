@@ -88,7 +88,40 @@ SEGMENTATION +--------> TRANSPORT +--------> REASSEMBLY
 
 # INTERNET PROTOCOL (IP)
 
-The Internet Protocol (IP) is a set of rules and conventions that govern the routing and addressing of data packets in computer networks, enabling data to be transmitted and received across interconnected networks. It ensures that data packets are correctly directed from the source to the destination based on unique numerical addresses assigned to devices on the network and it also includes mechanisms for error handling, fragmentation, and reassembly of data packets to facilitate reliable communication between devices over diverse network infrastructures.
+The Internet Protocol (IP) is a Layer 3 protocol which can be defined as a set of rules and conventions that govern the routing and addressing of data packets in computer networks, enabling data to be transmitted and received across interconnected networks. It ensures that data packets are correctly directed from the source to the destination based on unique numerical addresses assigned to devices on the network and it also includes mechanisms for error handling, fragmentation, and reassembly of data packets to facilitate reliable communication between devices over diverse network infrastructures.
+
+- **IPv4**: Internet Protocol version, used by most domains and devices.
+
+  - _Length_: IPv4 uses `32-bit` addresses, which allows for approximately 4.3 billion unique IP addresses.
+  - _Format_: Typically written in dotted-decimal format (e.g., `192.168.254.1`), where each of the four decimal numbers represents 8 bits octets (`2^8` = `256 numbers`, ranging from `0` to `255`).
+  - _Address Exhaustion_: IPv4 has run into the problem of address exhaustion due to the limited number of available addresses. This led to the development of IPv6.
+
+- **IPv6**:
+
+  - _Length_: IPv6 uses `128-bit` addresses, which provides enough number of unique IP addresses (approximately 340 undecillion addresses).
+  - _Format_: Addresses are written in hexadecimal format with colons (e.g., `2001:0db8:85a3:0000:0000:8a2e:0370:7334`). Each hexadecimal digit needs `4` bits to be represented, since we have `8` groups of `4` hexadecimal digits, we need then `(8 * 4) hexadecimal digits * 4 bits = 128 bits` in total.
+  - _Address Exhaustion_: IPv6 was designed to eliminate address exhaustion and provide a virtually limitless pool of IP addresses to accommodate the growing number of internet-connected devices.
+
+- **Other features of IPv6**:
+  - _Address Hierarchy_: hierarchical addressing structure, making network routing more efficient and reducing the size of routing tables.
+  - _Autoconfiguration_: includes built-in support for stateless address autoconfiguration, simplifying the process of assigning IP addresses to devices.
+  - _Security_: improved security features compared to IPv4, including built-in IPsec support for secure communication.
+
+### Subnets
+
+Logical subdivision of an IP network. It groups a set of devices within a larger IP network into smaller, isolated segments. Devices within a subnet can communicate directly with each other without the need for routing.
+
+    SUBNET = (IP address) & (SUBNET MASK)
+
+### Subnet Mask
+
+32-bit numeric address that divides an IP address into a network portion and a host portion. It determines which part of an IP address belongs to the network and which part belongs to the specific device within that network.
+
+### Default Gateway
+
+Network device, usually a router, that serves as the routing entry point for data traffic leaving a local network and heading toward external networks or destinations. It acts as an intermediary between devices within the local network and external networks, such as the internet, by forwarding data packets to their appropriate destinations. The default gateway is typically configured with an IP address, and devices within the local network are configured to use this IP address as the route for sending data outside of their local network segment.
+
+#### Example - Working with Subnets and Subnet Masks:
 
 ... [TABLE OF CONTENTS](#table-of-contents)
 
