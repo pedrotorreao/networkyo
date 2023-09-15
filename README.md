@@ -115,13 +115,55 @@ Logical subdivision of an IP network. It groups a set of devices within a larger
 
 ### Subnet Mask
 
-32-bit numeric address that divides an IP address into a network portion and a host portion. It determines which part of an IP address belongs to the network and which part belongs to the specific device within that network.
+32-bit numeric address that divides an IP address into a network portion and a host portion. It determines which part of an IP address belongs to the network and which part belongs to the specific device within that network. When a device wants to communicate with another device on the same subnet, it checks if the destination IP address falls within the same network segment. This check is done by applying a bitwise AND operation between the IP address and the subnet mask. If the result matches the network address of the sender, the destination is on the same subnet.
 
 ### Default Gateway
 
 Network device, usually a router, that serves as the routing entry point for data traffic leaving a local network and heading toward external networks or destinations. It acts as an intermediary between devices within the local network and external networks, such as the internet, by forwarding data packets to their appropriate destinations. The default gateway is typically configured with an IP address, and devices within the local network are configured to use this IP address as the route for sending data outside of their local network segment.
 
-#### Example - Working with Subnets and Subnet Masks:
+- Networks usually consist of various hosts and a Default Gateway.
+- A can host can talk directly to another if both are in the same subnet. Otherwise, the sender sends the package to the Default Gateway, which then forwards it to the receiver.
+- Each host should know its gateway' IP address.
+
+#### Example 1 - Working with Subnets and Subnet Masks:
+
+Consider the IP address `192.168.254.0/24`:
+
+- The first portion `192.168.254`, corresponding to `24` bits (`3` octets), is used to represent the network portion of the IP address.
+- The last `8` bits, the `.0` portion, tells us that these `8` bits are reserved for the host.
+- This arrangement will give us `2^24 = 16777216` possible networks, each having `2^8 = 256` hosts.
+- `192.168.254.0/24` is also called a **SUBNET** and this subnet has the **SUBNET MASK** `255.255.255.0`.
+
+#### Example 2 - Working with Subnets and Subnet Masks:
+
+Consider the following network configuration with the subnet mask `255.255.255.0`.
+
+![original](images/networking_1_original.jpg)
+
+a. Host **A** (`192.168.1.3`) wants to talk to host **B** (`192.168.1.2`):
+
+1. Apply the subnet to both hosts:
+
+   - `SUBNET_A` = `IP_A & SUBNET MASK` = `(192.168.1.3) & (255.255.255.0)` = `192.168.1.0`
+   - `SUBNET_B` = `IP_B & SUBNET MASK` = `(192.168.1.2) & (255.255.255.0)` = `192.168.1.0`
+
+2. Comparing both subnets obtained, we can see that they are the same, so hosts **A** and **B** are in the same network, no need for routing. The router, in this case, behaves like a Layer 2 switch.
+
+![switch](images/networking_1_switch.jpg)
+
+b. Host **A** (`192.168.1.3`) wants to talk to host **E** (`192.168.2.2`):
+
+1. Apply the subnet to both hosts:
+
+   - `SUBNET_A` = `IP_A & SUBNET MASK` = `(192.168.1.3) & (255.255.255.0)` = `192.168.1.0`
+   - `SUBNET_E` = `IP_E & SUBNET MASK` = `(192.168.2.2) & (255.255.255.0)` = `192.168.2.0`
+
+2. Comparing both subnets obtained, we can see that they are the different, so hosts **A** and **E** are in different networks, the packet sent by **A** will need to be sent to the default gateway/router (`192.168.1.100`), which is in the same subnet as **A**.
+3. The router then looks for host **E** in other networks it's connected to. It finds **E** in other network and forwards it the package sent by **A**.
+
+![router](images/networking_1_router.jpg)
+
+### IP Packet Structure
 
 ... [TABLE OF CONTENTS](#table-of-contents)
 
@@ -204,11 +246,11 @@ Mechanisms provided by an operating system for processes to manage shared data. 
 
 # USEFUL COMMAND LINE TOOLS
 
-### `ping`
+#### `ping`
 
-### `tcpdump`
+#### `tcpdump`
 
-### `netcat`
+#### `netcat`
 
 # REFERENCES
 
