@@ -163,7 +163,137 @@ b. Host **A** (`192.168.1.3`) wants to talk to host **E** (`192.168.2.2`):
 
 ![router](images/networking_1_router.jpg)
 
+> TIP: if you application and its database are in different subnets, the IP packets containing your SQL queries will always need to go through the router which, if congested, will possibly cause delays.
+
 ### IP Packet Structure
+
+An IP packet consists of a **header** section and a **data** section. The IP **header** is usually `20` bytes, but it can go up to `60` bytes in case options are enabled. The `data ` section can go up to `65515` bytes. It has no data checksum or any other footer after the data section. Typically the Data Link Layer encapsulates IP packets in frames with a CRC footer that detects most errors, many transport-layer protocols carried by IP also have their own error checking.
+
+How the Backend engineer usually sees the IP packet:
+
+      | SOURCE IP ADDRESSS | DATA | DESTINATION IP ADDRESS |
+
+How it actually looks like:
+
+![ipv4 packet](images/networking_ipv4_packet.png)
+
+_Source: [Michel Bakni - Postel, J. (September 1981) RFC 791, Internet Protocol, DARPA Internet Program Protocol Specification, The Internet Society](https://commons.wikimedia.org/w/index.php?curid=79949694)_
+
+#### IP Packet Header
+
+The IPv4 packet header consists of `14` fields, of which `13` are required. The 14th field is optional and the reason why the IPv4 header is variable in size. The fields in the header are packed with the most significant byte first (network byte order). So, the most significant bit is numbered 0.
+
+- **_Version_**:
+  ```
+  The first header field in an IP packet is the four-bit version field. For IPv4, this is always equal to 4.
+  ```
+- **_IHL_** - Internet Header Length:
+  ```
+  The IHL field is a 4-bit field containing the size of the IPv4 header. Its 4 bits specify the number of 32-bit words in the header. The minimum value for this field is 5, when no options are specified, which indicates a length of 5 × 32 bits = 160 bits = 20 bytes. As a 4-bit field, the maximum value is 15; this means that the maximum size of the IPv4 header is 15 × 32 bits = 480 bits = 60 bytes.
+  ```
+- **_DSCP_** - Differentiated Services Code Point:
+
+  ```
+  It specifies differentiated services (DiffServ). Real-time data streaming makes use of the DSCP field. An example is Voice over IP (VoIP), which is used for interactive voice services.
+
+  ```
+
+- **_ECN_** - Explicit Congestion Notification:
+
+  ```
+  This field allows end-to-end notification of network congestion without dropping packets. ECN is an optional feature available when both endpoints support it and effective when also supported by the underlying network.
+  ```
+
+- _**Total length**_:
+
+  ```
+  This 16-bit field defines the entire packet size in bytes, including header and data. The minimum size is 20 bytes (header without data) and the maximum is 65,535 bytes.
+  ```
+
+- _**Identification**_:
+
+  ```
+  Identification field primarily used for uniquely identifying the group of fragments of a single IP datagram.
+  ```
+
+- _**Flags**_:
+
+  ```
+  A three-bit field used to control or identify fragments. They are (in order, from most significant to least significant):
+      bit 0: Reserved; must be zero.
+      bit 1: Don't Fragment (DF).
+        --> If the DF flag is set and fragmentation is required to route the packet,
+            then the packet is dropped. This can be used when sending packets to a host
+            that does not have resources to perform reassembly of fragments. It can also
+            be used for path MTU discovery, either automatically by the host IP
+            software, or manually using diagnostic tools such as ping or traceroute.
+      bit 2: More Fragments (MF)
+        --> The MF flag is cleared for unfragmented packets. For fragmented packets,
+            all fragments except the last have the MF flag set. The last fragment has a
+            non-zero Fragment Offset field, differentiating it from an unfragmented
+            packet.
+  ```
+
+- _**Fragment offset**_:
+
+  ```
+  This field specifies the offset of a particular fragment relative to the beginning of the original unfragmented IP datagram. The fragmentation offset value for the first fragment is always 0.
+  ```
+
+- _**TTL**_:
+
+  ```
+  An 8-bit time to live field limits a datagram's lifetime to prevent network failure in the event of a routing loop. It is specified in seconds, but time intervals less than 1 second are rounded up to 1. In practice, the field is used as a hop count—when the datagram arrives at a router, the router decrements the TTL field by one. When the TTL field hits zero, the router discards the packet and typically sends an ICMP time exceeded message to the sender.
+  ```
+
+- _**Protocol**_:
+
+  ```
+  This field defines the protocol used in the data portion of the IP datagram. Some examples:
+      1:  Internet Message Protocol (ICMP)
+      6:  Transmission Control Protocol (TCP)
+      17: User Datagram Protocol (UDP)
+  ```
+
+- _**Header checksum**_:
+
+  ```
+  This 16-bit field is used for error-checking of the header. When a packet arrives at a router, the router calculates the checksum of the header and compares it to the checksum field. If the values do not match, the router discards the packet.
+
+  When a packet arrives at a router, the router decreases the TTL field in the header. Consequently, the router must calculate a new header checksum. The checksum field is the 16 bit one's complement of the one's complement sum of all 16 bit words in the header. For purposes of computing the checksum, the value of the checksum field is zero.
+  ```
+
+- _**Source address**_:
+
+  ```
+  This 32-bit field is the IPv4 address of the sender of the packet. It may be changed in transit by network address translation (NAT).
+  ```
+
+- Destination address:
+
+  ```
+  This 32-bit field is the IPv4 address of the receiver of the packet. It may be affected by NAT.
+  ```
+
+- Options:
+
+  ```
+  The options field is not often used. Packets containing some options may be considered as dangerous by some routers and be blocked.
+  ```
+
+#### IP Packet Data
+
+### Internet Control Message Protocol (ICMP)
+
+Supporting protocol used by network devices (e.g. routers) to send error messages and operational information indicating success or failure when communicating with other IP addresses. However, unlike transport protocols like TCP and UDP, ICMP is not typically used to exchange data between systems nor used by end-user network applications.
+
+ICMP is used as the basis for diagnostic tools such as [`ping`](#ping) and [`traceroute`](#traceroute).
+
+ICMP is a network-layer protocol, this makes it layer 3 protocol by the 7 layer [**OSI model**](#osi-model-open-systems-interconnection). This way, there is no TCP or UDP port number associated with ICMP packets as these numbers are associated with the transport layer above.
+
+The ICMP packet is encapsulated in an IPv4 packet. The packet consists of header and data sections.
+
+![icmp header](images/networking_icmp_packet.png)
 
 ... [TABLE OF CONTENTS](#table-of-contents)
 
@@ -248,16 +378,35 @@ Mechanisms provided by an operating system for processes to manage shared data. 
 
 #### `ping`
 
+#### `traceroute`
+
+Sends messages with adjusted TTL values and uses these ICMP time exceeded messages to identify the routers traversed by packets from the source to the destination.
+
 #### `tcpdump`
 
 #### `netcat`
 
 # REFERENCES
 
-- [Internet Protocol - IP](https://www.cloudflare.com/learning/network-layer/internet-protocol/)
+#### OSI Model:
+
+- [OSI Model](https://osi-model.com/)
+
+#### Internet Protocol - IP:
+
+- [Internet Protocol version 4 - Wikipedia](https://en.wikipedia.org/wiki/Internet_Protocol_version_4#Header)
+- [Network Layer - Internet Protocol](https://www.cloudflare.com/learning/network-layer/internet-protocol/)
+- [Network Address Translation - Wikipedia](https://en.wikipedia.org/wiki/Network_address_translation)
+
+#### Internet Control Message Protocol - ICMP:
+
+- [RFC 792](https://www.rfc-editor.org/rfc/rfc792)
+- [ICMP - Wikipedia](https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol)
+
+#### Socket Programming:
+
 - [Socket Programming in Python (Guide)](https://realpython.com/python-sockets/)
 - [Berkeley sockets](https://en.wikipedia.org/wiki/Berkeley_sockets)
 - [Unix domain socket](https://en.wikipedia.org/wiki/Unix_domain_socket)
 - [Unix Socket Tutorial](https://www.tutorialspoint.com/unix_sockets/index.htm)
 - [Inter-process communication](https://en.wikipedia.org/wiki/Inter-process_communication)
-- [OSI Model](https://osi-model.com/)
