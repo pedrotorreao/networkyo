@@ -185,7 +185,7 @@ The IPv4 packet header consists of `14` fields, of which `13` are required. The 
 
 - **_Version_**:
   ```
-  The first header field in an IP packet is the four-bit version field. For IPv4, this is always equal to 4.
+  The first header field in an IP packet is the four-bit version field. For IPv4, this is always equal to 4. For IPv6, it is always equal to 6.
   ```
 - **_IHL_** - Internet Header Length:
   ```
@@ -207,7 +207,7 @@ The IPv4 packet header consists of `14` fields, of which `13` are required. The 
 - _**Total length**_:
 
   ```
-  This 16-bit field defines the entire packet size in bytes, including header and data. The minimum size is 20 bytes (header without data) and the maximum is 65,535 bytes.
+  This 16-bit field defines the entire packet size in bytes, including header and data. The minimum size is 20 bytes (header without data) and the maximum is 65535 bytes.
   ```
 
 - _**Identification**_:
@@ -240,7 +240,7 @@ The IPv4 packet header consists of `14` fields, of which `13` are required. The 
   This field specifies the offset of a particular fragment relative to the beginning of the original unfragmented IP datagram. The fragmentation offset value for the first fragment is always 0.
   ```
 
-- _**TTL**_:
+- _**TTL**_ - Time To Live:
 
   ```
   An 8-bit time to live field limits a datagram's lifetime to prevent network failure in the event of a routing loop. It is specified in seconds, but time intervals less than 1 second are rounded up to 1. In practice, the field is used as a hop count—when the datagram arrives at a router, the router decrements the TTL field by one. When the TTL field hits zero, the router discards the packet and typically sends an ICMP time exceeded message to the sender.
@@ -269,19 +269,46 @@ The IPv4 packet header consists of `14` fields, of which `13` are required. The 
   This 32-bit field is the IPv4 address of the sender of the packet. It may be changed in transit by network address translation (NAT).
   ```
 
-- Destination address:
+- _**Destination address**_:
 
   ```
   This 32-bit field is the IPv4 address of the receiver of the packet. It may be affected by NAT.
   ```
 
-- Options:
+- _**Options**_:
 
   ```
   The options field is not often used. Packets containing some options may be considered as dangerous by some routers and be blocked.
   ```
 
 #### IP Packet Data
+
+The content of the IP packet data is interpreted based on the value set for the _**Protocol**_ field in the IP header. Some examples are:
+
+      1:  Internet Message Protocol (ICMP)
+      6:  Transmission Control Protocol (TCP)
+      17: User Datagram Protocol (UDP)
+
+
+The packet payload is not included in the checksum. Its contents are interpreted based on the value of the Protocol header field.
+
+- _**Fragmentation**_:
+
+  ```
+  Networks with different hardware usually vary not only in transmission speed, but also in the maximum transmission unit (MTU). Therefore, when one network wants to transmit datagrams to a network with a smaller MTU, it may fragment its datagrams.
+
+  When a router receives a packet, it examines the destination address and determines the outgoing interface to use and that interface's MTU. If the packet size is bigger than the MTU, and the Do not Fragment (DF) bit in the packet's header is set to 0, i.e. fragmentation is allowed, then the router may fragment the packet.
+  ```
+
+- _**Reassembly**_:
+
+  ```
+  A receiver knows that a packet is a fragment, if at least one of the following conditions is true:
+    - The flag more fragments (MF) is set, which is true for all fragments except the last.
+    - The field fragment offset is nonzero, which is true for all fragments except the first.
+
+  The receiver identifies matching fragments using the source and destination addresses, the protocol ID, and the identification field. The receiver reassembles the data from fragments with the same ID using both the fragment offset and the more fragments flag.
+  ```
 
 ### Internet Control Message Protocol (ICMP)
 
