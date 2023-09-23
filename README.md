@@ -289,7 +289,6 @@ The content of the IP packet data is interpreted based on the value set for the 
       6:  Transmission Control Protocol (TCP)
       17: User Datagram Protocol (UDP)
 
-
 The packet payload is not included in the checksum. Its contents are interpreted based on the value of the Protocol header field.
 
 - _**Fragmentation**_:
@@ -314,13 +313,64 @@ The packet payload is not included in the checksum. Its contents are interpreted
 
 Supporting protocol used by network devices (e.g. routers) to send error messages and operational information indicating success or failure when communicating with other IP addresses. However, unlike transport protocols like TCP and UDP, ICMP is not typically used to exchange data between systems nor used by end-user network applications.
 
+      ICMP messages are sent in several situations:  for example, when a
+      datagram cannot reach its destination, when the gateway does not have
+      the buffering capacity to forward a datagram, and when the gateway
+      can direct the host to send traffic on a shorter route.
+
 ICMP is used as the basis for diagnostic tools such as [`ping`](#ping) and [`traceroute`](#traceroute).
 
 ICMP is a network-layer protocol, this makes it layer 3 protocol by the 7 layer [**OSI model**](#osi-model-open-systems-interconnection). This way, there is no TCP or UDP port number associated with ICMP packets as these numbers are associated with the transport layer above.
 
-The ICMP packet is encapsulated in an IPv4 packet. The packet consists of header and data sections.
+#### ICMP Packet Header
+
+The ICMP packet is encapsulated in an IPv4 packet. The packet consists of header and content sections. See a simplified example below:
 
 ![icmp header](images/networking_icmp_packet.png)
+
+- _**Type**_:
+
+  ```
+  First octet of the data portion. Its value determines the format of the remaining data and which kind of control messages will be sent. See examples below:
+    0- Echo Reply
+    3- Destination Unreachable
+    5- Redirect Message
+    8- Echo Request
+    11- Time Exceeded
+    30- Traceroute
+
+  ```
+
+- _**Code**_:
+
+  ```
+  The Code field represents an ICMP subtype. Given the value in the Type field, the Code gives additional context information for the message. See examples below:
+      - Type = 3 - Destination Unreachable:
+          - Code = 0: Destination network unreachable
+          - Code = 3: Destination port unreachable
+          - Code = 4: Fragmentation required, and DF (Don't Fragment) flag set
+
+      - Type = 11 - Time Exceeded:
+          - Code = 0: TTL expired in transit
+          - Code = 1: Fragment reassembly time exceeded
+  ```
+
+- _**Checksum**_:
+
+  ```
+  Checksum for error checking, calculated from the ICMP header and data with value 0 substituted for this field.
+  ```
+
+- _**Content/Rest of header**_:
+
+  ```
+  ICMP error messages contain a data section that includes a copy of the entire IPv4 header, plus at least the first eight bytes of data from the IPv4 packet that caused the error message. This data is used by the host to match the message to the appropriate process.
+  ```
+
+**Note**:
+
+- Some firewalls block ICMP for security reasons, so tools like `ping` might not work for those cases. However, disabling ICMP also can cause problems with connection establishment (i.e. fragmentation needed).
+- To avoid the infinite regress of messages about messages etc., no ICMP messages are sent about ICMP messages.
 
 ... [TABLE OF CONTENTS](#table-of-contents)
 
@@ -429,6 +479,8 @@ Sends messages with adjusted TTL values and uses these ICMP time exceeded messag
 
 - [RFC 792](https://www.rfc-editor.org/rfc/rfc792)
 - [ICMP - Wikipedia](https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol)
+- [ping (networking utility) - Wikipedia](<https://en.wikipedia.org/wiki/Ping_(networking_utility)>)
+- [traceroute - Wikipedia](https://en.wikipedia.org/wiki/Traceroute)
 
 #### Socket Programming:
 
