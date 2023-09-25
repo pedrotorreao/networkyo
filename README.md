@@ -326,7 +326,7 @@ ICMP is a network-layer protocol, this makes it layer 3 protocol by the 7 layer 
 
 The ICMP packet is encapsulated in an IPv4 packet. The packet consists of header and content sections. See a simplified example below:
 
-![icmp header](images/networking_icmp_packet.png)
+![icmp header packet](images/networking_ipv4_icmp_packet.png)
 
 - _**Type**_:
 
@@ -453,15 +453,46 @@ Mechanisms provided by an operating system for processes to manage shared data. 
 
 # USEFUL COMMAND LINE TOOLS
 
-#### `ping`
+### `ping`
 
-#### `traceroute`
+Tool used for testing the reachability of a host on an Internet Protocol (IP) network. It measures the round-trip time for messages sent from the originating host to a destination computer that are echoed back to the source.
+
+Ping uses [ICMP](#internet-control-message-protocol-icmp) packets. Pinging involves sending an `ICMP echo request` to the target host and waiting for an `ICMP echo reply`. By default, the `ping` command sends a few echo requests, usually four or five. The result of each `echo request` is displayed, showing whether the request received a successful response, how many bytes were received in response, the Time to Live (TTL), and how long the response took to receive, along with reports of errors, packet loss, and a statistical summary of the results, typically including the minimum, maximum, the mean round-trip times, and standard deviation of the mean.
+
+> Syntax: `ping [option] [hostname or IP address]`
+
+Example - basic syntax without specifying any option: `ping www.google.com`
+
+![ping-example](images/networking-ping-example.png)
+
+Note: Use `Ctrl+C` to stop pinging.
+
+Analyzing the responses received:
+
+- **64 bytes**: amount of bytes received.
+- **from ...**: destination and its IP address, probably geographic dependent.
+- **icmp_seq=1**: sequence number of each ICMP packet, i.e. `echo request`.
+- **ttl=112**: ttl stands for Time To Live, which could be a value ranging from `1` to `255` and it indicates the number of network hops that a packet can take before being droped.
+- **time=45.4ms**: time taken by the packet to reach the destination and come back to the source with the `echo response`.
+- **statistical summary**: this gives us the amount of packets sent, received, the percentage of packet loss, the minimum, maximum, the mean round-trip times, and standard deviation of the mean.
+
+#### Specifying options (Linux)
+
+- `-4`:
+- `-6`:
+- `-i`:
+- `-s`:
+- `-c`:
+- `-w`:
+- `-q`:
+
+### `traceroute`
 
 Sends messages with adjusted TTL values and uses these ICMP time exceeded messages to identify the routers traversed by packets from the source to the destination.
 
-#### `tcpdump`
+### `tcpdump`
 
-#### `netcat`
+### `netcat`
 
 # REFERENCES
 
@@ -480,6 +511,8 @@ Sends messages with adjusted TTL values and uses these ICMP time exceeded messag
 - [RFC 792](https://www.rfc-editor.org/rfc/rfc792)
 - [ICMP - Wikipedia](https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol)
 - [ping (networking utility) - Wikipedia](<https://en.wikipedia.org/wiki/Ping_(networking_utility)>)
+- [IT Explained: Ping - Paessler](https://www.paessler.com/it-explained/ping)
+- [Linux Ping Command Examples](https://phoenixnap.com/kb/linux-ping-command-examples)
 - [traceroute - Wikipedia](https://en.wikipedia.org/wiki/Traceroute)
 
 #### Socket Programming:
