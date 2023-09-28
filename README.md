@@ -478,17 +478,78 @@ Analyzing the responses received:
 
 #### Specifying options (Linux)
 
-- `-4`:
-- `-6`:
-- `-i`:
-- `-s`:
-- `-c`:
-- `-w`:
-- `-q`:
+- `-4`: send the `echo request` to an IPv4 address.
+- `-6`: send the `echo request` to an IPv6 address.
+- `-i`: update the time interval between packets. The default interval is `1` second. See below how to change it to `2.5`s:
+
+  > `ping -i 2.5 www.google.com`
+
+- `-s`: update the packet size. The default packet size value is `56(84) bytes`. The number `84` is total size including the headers (`20` bytes for the IP header and `8` bytes for the ICMP header). Let's change it to 250 bytes:
+
+  > `ping -s 250 www.google.com`
+
+- `-c`: limit the number of ping packets sent.
+- `-w`: set a time limit for the ping command.
+- `-q`: supress ping output and print only the statistical summary.
 
 ### `traceroute`
 
-Sends messages with adjusted TTL values and uses these ICMP time exceeded messages to identify the routers traversed by packets from the source to the destination.
+Computer network diagnostic tool used for displaying possible paths (routes) and measuring transit delays of packets across an IP network. The history of the route is recorded as the round-trip times of the packets received from each successive host in the route (path); the sum of the mean times in each hop is a measure of the total time spent to establish the connection. Traceroute proceeds unless all (usually **three**) sent packets are lost more than twice; then the connection is lost and the route cannot be evaluated.
+
+`traceroute` sends messages with adjusted TTL values and uses these ICMP time exceeded messages to identify the routers traversed by packets from the source to the destination. The time-to-live (TTL) value, also known as hop limit, is used in determining the intermediate routers being traversed towards the destination. Despite what the name suggests, it represents a count, not a duration.
+
+1. Traceroute sends packets with TTL values that gradually increase from packet to packet, starting with TTL value of one.
+2. Routers decrement TTL values of packets by one when routing and discard packets whose TTL value has reached zero, returning the ICMP error message ICMP Time Exceeded.
+3. Traceroute uses the returned ICMP Time Exceeded messages to build a list of routers that packets traverse, until the destination is reached or the maximum number of hops (`30`, by default) is achieved.
+4. In case it reaches the destination, it returns an ICMP Destination Unreachable message if UDP packets are being used or an ICMP Echo Reply message if ICMP Echo messages are being used.
+5. The timestamp values returned for each router along the path are the delay (latency) values, typically measured in milliseconds for each packet.
+
+**Note**: If a packet is not acknowledged within the expected interval, an asterisk is displayed.
+
+On Unix-like operating systems, traceroute sends, by default, a sequence of User Datagram Protocol (UDP) packets, with destination port numbers ranging from 33434 to 33534; however, it is possible to use ICMP Echo Request packets (-I), or any arbitrary protocol (-P) such as UDP, TCP using TCP SYN packets, or ICMP.
+
+> Syntax: `traceroute [option] [hostname or IP address]`
+
+Example - basic syntax using default settings: `traceroute ww.google.com`
+
+![traceroute-example](images/networking-traceroute-example.png)
+
+Let's take a look at the output:
+
+- The first line give us the destination (`www.google.com`) and its IP address (`142.251.128.36`), the maximum number of hops (`30 hops max`), and the size of the UDP packets being sent (`60 byte packets`).
+
+Next, all the next lines contain information about one of the hops and each line have the following format:
+
+- `[hop count] [device name if identifiable] [IP address] [round trip time for each of the 3 packets sent]`
+
+A few interesting points:
+
+1. The first hop is to the router/gateway for the local network. That's the entry/exit point from the local network to the internet.
+2. The `10th` hop has a lot of information. We can see that each of the `3` packets sent reached a different device. That's probably an indicative of network configured to handle high volumes of traffic.
+3. We reached the destination by the `14th` hop as can be seen from the device's IP address (`142.251.128.36`).
+
+#### Specifying options (Linux):
+
+- `-w waittime`: specify the wait time for each request (`5` seconds is the default). Let's change it to `10` seconds:
+
+  > `traceroute -w 10 www.google.com`
+
+- `-q nqueries`: specify the number of queries sent for each hop (`3` is the default). Let's change it to `5` queries:
+
+  > `traceroute -q 5 www.google.com`
+
+- `-m max_ttl`: specify the maximum number of hops that `traceroute` will take before giving up (default is `30`). If we were to update it to `45`:
+
+  > `traceroute -m 45 www.google.com`
+
+- `-f first_ttl`: specify the initial hop from which `traceroute` will begin its diagnostic (default is `1`).
+  > `traceroute -f 10 www.google.com`
+
+We can also combine options, the command below will run `traceroute` with all the options mentioned above:
+
+> `traceroute -w 10 -q 5 -m 45 -f 10 www.google.com`
+
+There are a lot more options that can be specified, please take a look at the [References](#references) section if interested.
 
 ### `tcpdump`
 
@@ -512,8 +573,9 @@ Sends messages with adjusted TTL values and uses these ICMP time exceeded messag
 - [ICMP - Wikipedia](https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol)
 - [ping (networking utility) - Wikipedia](<https://en.wikipedia.org/wiki/Ping_(networking_utility)>)
 - [IT Explained: Ping - Paessler](https://www.paessler.com/it-explained/ping)
-- [Linux Ping Command Examples](https://phoenixnap.com/kb/linux-ping-command-examples)
+- [Linux Ping Command Examples - phoenixNAP](https://phoenixnap.com/kb/linux-ping-command-examples)
 - [traceroute - Wikipedia](https://en.wikipedia.org/wiki/Traceroute)
+- [Traceroute command and its options - ClouDNS](https://www.cloudns.net/blog/traceroute-command-tracert/)
 
 #### Socket Programming:
 
