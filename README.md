@@ -4,8 +4,14 @@
 
 - [OSI MODEL](#osi-model-open-systems-interconnection)
 - [INTERNET PROTOCOL (IP)](#internet-protocol-ip)
+  - [IP Packet Structure](#ip-packet-structure)
+  - [Internet Control Message Protocol (ICMP)](#internet-control-message-protocol-icmp)
+  - [Address Resolution Protocol (ARP)](#address-resolution-protocol-arp)
+  - [Dynamic Host Configuration Protocol (DHCP)](#dynamic-host-configuration-protocol-dhcp)
+  - [Domain Name System (DNS)](#domain-name-system-dns)
 - [USER DATAGRAM PROTOCOL (UDP)](#user-datagram-protocol-udp)
 - [TRANSMISSION CONTROL PROTOCOL (TCP)](#transmission-control-protocol-tcp)
+- [REFERENCES](#references)
 
 ---
 
@@ -372,6 +378,26 @@ The ICMP packet is encapsulated in an IPv4 packet. The packet consists of header
 - Some firewalls block ICMP for security reasons, so tools like `ping` might not work for those cases. However, disabling ICMP also can cause problems with connection establishment (i.e. fragmentation needed).
 - To avoid the infinite regress of messages about messages etc., no ICMP messages are sent about ICMP messages.
 
+### Address Resolution Protocol (ARP)
+
+Address Resolution Protocol (ARP) is a protocol or procedure that connects an ever-changing Internet Protocol (IP) address to a fixed physical machine address, also known as a media access control (MAC) address, in a local-area network (LAN). The MAC address is also known as the data link layer, which establishes and terminates a connection between two physically connected devices so that data transfer can take place. The IP address is also referred to as the network layer or the layer responsible for forwarding packets of data through different routers. ARP works between these layers.
+
+Layer 2 protocol used to map MAC addresses to IP addresses. All hosts on a network are located by their IP address, but NICs (Network Interface Card) do not have IP addresses, they have MAC addresses. ARP is the protocol used to associate the IP address to a MAC address. We need MAC addresses to send frames (layer 2).
+
+When a host wants to send a packet to another host, say IP address 10.5.5.1, on its local area network (LAN), it first sends out (broadcasts) an ARP packet. The ARP packet contains a simple question: What is the MAC address corresponding to IP address 10.5.5.1? The host that has been configured to use the IP address responds with an ARP packet containing its MAC address.
+
+The ARP Table is a cached `IP Address ---> MAC Address` mapping.
+
+### Dynamic Host Configuration Protocol (DHCP)
+
+..
+
+### Domain Name System (DNS)
+
+..
+
+...
+
 ... [TABLE OF CONTENTS](#table-of-contents)
 
 # USER DATAGRAM PROTOCOL (UDP)
@@ -576,6 +602,10 @@ There are a lot more options that can be specified, please take a look at the [R
 - [Linux Ping Command Examples - phoenixNAP](https://phoenixnap.com/kb/linux-ping-command-examples)
 - [traceroute - Wikipedia](https://en.wikipedia.org/wiki/Traceroute)
 - [Traceroute command and its options - ClouDNS](https://www.cloudns.net/blog/traceroute-command-tracert/)
+
+#### Address Resolution Protocol - ARP:
+
+- [What is Address Resolution Protocol (ARP)? - Fortinet](https://www.fortinet.com/resources/cyberglossary/what-is-arp)
 
 #### Socket Programming:
 
