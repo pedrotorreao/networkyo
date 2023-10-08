@@ -482,6 +482,21 @@ It is the server that actually holds, and is responsible for, DNS resource recor
 
 It is the computer that responds to a recursive request from a client and tracks down the DNS record. It does this by making a series of requests until it reaches the authoritative DNS nameserver for the requested record (or times out or returns an error if no record is found). Recursive DNS resolvers uses caching mechanisms to not always need to make multiple requests in order to track down the records needed to respond to a client .
 
+### DNS Lookup
+
+There are typically 8 steps in a DNS lookup. When DNS information is cached, steps are skipped from the DNS lookup process which makes it quicker. The example below outlines all 8 steps when nothing is cached.
+
+1. A user enters a website address into a browser (i.e. `google.com`). This query is received by a DNS recursive resolver.
+2. The resolver then queries the DNS Root nameserver.
+3. The DNS Root nameserver then responds to the resolver with the address of a Top Level Domain (TLD) DNS server (such as .com or .org), which stores the information for its domains (i.e. `.com` for our example).
+4. The DNS resolver then makes a request to the `.com` Top Level Domain (TLD) server.
+5. The TLD server then responds with the IP address of the domain’s nameserver.
+6. The DNS recursive resolver sends a query to the domain’s nameserver.
+7. The IP address for `google.com` is then returned to the resolver from the nameserver.
+8. The DNS resolver then responds to the web browser with the IP address of the domain requested initially.
+
+After the above steps for the DNS lookup are finished, the browser can make a HTTP request to the IP address received and the server at that IP returns the contents of the webpage to be rendered in the browser.
+
 :arrow_right_hook: [TABLE OF CONTENTS](#table-of-contents)
 
 # USER DATAGRAM PROTOCOL (UDP)
