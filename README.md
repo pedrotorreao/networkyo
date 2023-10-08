@@ -11,6 +11,10 @@
   - [Domain Name System (DNS)](#domain-name-system-dns)
 - [USER DATAGRAM PROTOCOL (UDP)](#user-datagram-protocol-udp)
 - [TRANSMISSION CONTROL PROTOCOL (TCP)](#transmission-control-protocol-tcp)
+- [USEFUL COMMAND LINE UTILITIES](#useful-command-line-utilities)
+  - [ping](#ping)
+  - [traceroute](#traceroute)
+  - [tcpdump](#tcpdump)
 - [REFERENCES](#references)
 
 ---
@@ -90,7 +94,7 @@ SEGMENTATION +--------> TRANSPORT +--------> REASSEMBLY
 | **2- DATA LINK** | FRAMES WITH MAC ADDRESSES | ETHERNET SWITCHES, NICs |
 | **1- PHYSICAL** | RAW BINARY DATA BITS | RADIO WAVES (WI-FI), ELECTRIC SIGNAL (ETHERNET CABLES), LIGHT (FIBER OPTICS) |
 
-[TABLE OF CONTENTS](#table-of-contents)
+:arrow_right: [TABLE OF CONTENTS](#table-of-contents)
 
 # INTERNET PROTOCOL (IP)
 
@@ -406,13 +410,47 @@ A denial-of-service (DoS) attack is one in which a cyberattacker attempts to ove
 
 ### Dynamic Host Configuration Protocol (DHCP)
 
-IP addresses, by design, are changed constantly for the simple reason that doing so gives users security and privacy. However changes on IP addresses should not be completely random. There should be rules that allocate an IP address from a defined range of numbers available in a specific network. This helps prevent issues, such as two computers receiving the same IP address. The rules are known as DHCP or Dynamic Host Configuration Protocol.
+Network management protocol used on IP networks for automatically assigning IP adresses and other communication parameters to devices connected to the network using a client-server architecture.
+
+IP addresses may be changed frequently, but these updates are not performed randomly, there are rules for allocating an IP address from a defined range of numbers available in a specific network. These rules are known as DHCP or Dynamic Host Configuration Protocol.
+
+#### DHCP Server
+
+The DHCP server manages a pool of IP addresses and information about client configuration parameters such as default gateway, domain name, the name servers, and time servers. On receiving a `DHCP request`, the DHCP server may respond with specific information for each client, as previously configured by an administrator, or with a specific address and any other information valid for the entire network and for the time period for which the allocation (lease) is valid.
+
+#### DHCP Client
+
+When a computer or other device connects to a network, the DHCP client software sends a DHCP broadcast query requesting the necessary information. A DHCP client typically queries this information immediately after booting, and periodically thereafter before the expiration of the information. Any DHCP server on the network may service the request.
+
+#### DHCP Relay
+
+Any TCP/IP host that forwards DHCP messages between servers and clients. A DHCP relay plays an essential role, for instance, when a network consists of several subnetworks.
+
+#### DHCP Operation
+
+There are 4 phases during the DHCP operations: server **_discovery_**, IP lease **_offer_**, IP lease _**request**_, and IP lease _**acknowledgement**_. These stages are often abbreviated as **DORA** for discovery, offer, request, and acknowledgement.
+
+- **Discovery**:
+
+The DHCP operation begins with clients broadcasting a request. If the client and server are in different Broadcast Domains, a DHCP Helper or DHCP Relay Agent may be used. The DHCP client broadcasts a `DHCPDISCOVER` message on the network subnet using the destination address `255.255.255.255` (limited broadcast) or the specific subnet broadcast address (directed broadcast). A DHCP client may also request a specific IP address in the `DHCPDISCOVER`.
+
+- **Offer**:
+
+Upon receiving a `DHCPDISCOVER` message from a client, which is an IP address lease request, the DHCP server reserves an IP address for the client and makes a lease offer by sending a `DHCPOFFER` message to the client. This message contains the client's client id (traditionally a MAC address), the IP address that the server is offering, the subnet mask, the lease duration, and the IP address of the DHCP server making the offer.
+
+- **Request**:
+
+In response to the DHCP offer, the client replies with a `DHCPREQUEST` message, broadcast to the server, requesting the offered address. A client can receive DHCP offers from multiple servers, but it will accept only one DHCP offer. To find out whether there is another host in the network using the offered IP address, before claiming it, the client broadcasts an ARP request. If there is no reply, this address does not conflict with that of another host, so it is free to be used. The client, then, sends the server identification option in the `DHCPREQUEST` message, indicating the server which offered the IP address chosen. Upon receiving this message, other DHCP servers withdraw any offers that they have made to the client and return their offered IP address to the pool of available addresses.
+
+- **Acknowledgement**:
+
+When the DHCP server receives the `DHCPREQUEST` message from the client, the configuration process enters its final phase. The acknowledgement phase involves sending a `DHCPACK` packet to the client. This packet includes the lease duration and any other configuration information that the client might have requested. At this point, the IP configuration process is completed.
 
 ### Domain Name System (DNS)
 
 When users search for a domain name or Uniform Resource Locator (URL), they use an alphabetical name. Computers, on the other hand, use the numerical IP address to associate the domain name with a server. To connect the two, a Domain Name System (DNS) server is used to translate an IP address from a confusing string of numbers into a more readable, easily understandable domain name, and vice versa.
 
-... [TABLE OF CONTENTS](#table-of-contents)
+[TABLE OF CONTENTS](#table-of-contents)
 
 # USER DATAGRAM PROTOCOL (UDP)
 
@@ -491,7 +529,7 @@ Why should you use TCP?
 
 Mechanisms provided by an operating system for processes to manage shared data. Typically, applications can use IPC, categorized as clients and servers, where the client requests data and the server responds to client requests. Many applications are both clients and servers, as commonly seen in distributed computing.[source](https://en.wikipedia.org/wiki/Inter-process_communication)
 
-# USEFUL COMMAND LINE TOOLS
+# USEFUL COMMAND LINE UTILITIES
 
 ### `ping`
 
@@ -621,6 +659,15 @@ There are a lot more options that can be specified, please take a look at the [R
 
 - [Address Resolution Protocol - Wikipedia](https://en.wikipedia.org/wiki/Address_Resolution_Protocol)
 - [What is Address Resolution Protocol (ARP)? - Fortinet](https://www.fortinet.com/resources/cyberglossary/what-is-arp)
+
+#### Dynamic Host Configuration Protocol - DHCP:
+
+- [Dynamic Host Configuration Protocol - Wikipedia](https://en.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol)
+- [What is Dynamic Host Configuration Protocol (DHCP)? - Fortinet](https://www.fortinet.com/resources/cyberglossary/dynamic-host-configuration-protocol-dhcp)
+
+#### Domain Name System - DNS:
+
+-[Domain Name System - Wikipedia](https://en.wikipedia.org/wiki/Domain_Name_System) -[What is DNS? | How DNS works - Cloudfare](https://www.cloudflare.com/learning/dns/what-is-dns/)
 
 #### Socket Programming:
 
