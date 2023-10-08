@@ -450,17 +450,13 @@ When the DHCP server receives the `DHCPREQUEST` message from the client, the con
 
 ### Domain Name System (DNS)
 
-Humans access information online through domain names, like nytimes.com or espn.com. Web browsers interact through Internet Protocol (IP) addresses. DNS translates domain names to IP addresses so browsers can load Internet resources.
-
-Each device connected to the Internet has a unique IP address which other machines use to find the device. DNS servers eliminate the need for humans to memorize IP addresses such as 192.168.1.1 (in IPv4), or more complex newer alphanumeric IP addresses such as 2400:cb00:2048:1::c629:d7a2 (in IPv6).
-
-When users search for a domain name or Uniform Resource Locator (URL), they use an alphabetical name. Computers, on the other hand, use the numerical IP address to associate the domain name with a server. To connect the two, a Domain Name System (DNS) server is used to translate an IP address from a confusing string of numbers into a more readable, easily understandable domain name, and vice versa.
+Users access information online through domain names, like `google.com` or `twitter.com`. Web browsers interact through Internet Protocol (IP) addresses. **DNS translates domain names to IP addresses** so browsers can load Internet resources, eliminating the need for humans to memorize IP addresses such as `192.168.1.1` (in IPv4), or `2400:cb00:2048:1::c629:d7a2` (in IPv6).
 
 Once the DNS server finds the correct IP address, browsers take the address and use it to send data to content delivery network (CDN) edge servers or origin servers. Once this is done, the information on the website can be accessed by the user. The DNS server starts the process by finding the corresponding IP address for a website’s uniform resource locator (URL).
 
 #### DNS Operation
 
-In a usual DNS query, the URL typed in by the user has to go through four servers for the IP address to be provided. The four servers work with each other to get the correct IP address to the client, and they include:
+In a usual DNS query, the URL typed in by the user has to go through four servers for the IP address to be provided. See a brief overview of these servers below:
 
 - _**DNS Recursor**_
 
@@ -484,7 +480,7 @@ It is the server that actually holds, and is responsible for, DNS resource recor
 
 #### Recursive DNS Resolver
 
-It is the computer that responds to a recursive request from a client and tracks down the DNS record. It does this by making a series of requests until it reaches the authoritative DNS nameserver for the requested record (or times out or returns an error if no record is found). Recursive DNS resolvers uses caching mechanisms to not always need to make multiple requests in order to track down the records needed to respond to a client.
+It is the computer that responds to a recursive request from a client and tracks down the DNS record. It does this by making a series of requests until it reaches the authoritative DNS nameserver for the requested record (or times out or returns an error if no record is found). Recursive DNS resolvers uses caching mechanisms to not always need to make multiple requests in order to track down the records needed to respond to a client .
 
 :arrow_right_hook: [TABLE OF CONTENTS](#table-of-contents)
 
