@@ -94,7 +94,7 @@ SEGMENTATION +--------> TRANSPORT +--------> REASSEMBLY
 | **2- DATA LINK** | FRAMES WITH MAC ADDRESSES | ETHERNET SWITCHES, NICs |
 | **1- PHYSICAL** | RAW BINARY DATA BITS | RADIO WAVES (WI-FI), ELECTRIC SIGNAL (ETHERNET CABLES), LIGHT (FIBER OPTICS) |
 
-:arrow_right: [TABLE OF CONTENTS](#table-of-contents)
+:arrow_right_hook: [TABLE OF CONTENTS](#table-of-contents)
 
 # INTERNET PROTOCOL (IP)
 
@@ -382,6 +382,8 @@ The ICMP packet is encapsulated in an IPv4 packet. The packet consists of header
 - Some firewalls block ICMP for security reasons, so tools like `ping` might not work for those cases. However, disabling ICMP also can cause problems with connection establishment (i.e. fragmentation needed).
 - To avoid the infinite regress of messages about messages etc., no ICMP messages are sent about ICMP messages.
 
+:arrow_right_hook: [TABLE OF CONTENTS](#table-of-contents)
+
 ### Address Resolution Protocol (ARP)
 
 Rquest-response protocol used to associate an Internet Protocol (IP) address to a fixed physical machine address, or media access control (MAC) address, in a local-area network (LAN). [The MAC address is part of the data link layer, which establishes and terminates a connection between two physically connected devices so that data transfer can take place. The IP address is also referred to as the network layer or the layer responsible for forwarding packets of data through different routers. ARP works between these layers.](https://www.fortinet.com/resources/cyberglossary/what-is-arp).
@@ -450,11 +452,11 @@ When the DHCP server receives the `DHCPREQUEST` message from the client, the con
 
 When users search for a domain name or Uniform Resource Locator (URL), they use an alphabetical name. Computers, on the other hand, use the numerical IP address to associate the domain name with a server. To connect the two, a Domain Name System (DNS) server is used to translate an IP address from a confusing string of numbers into a more readable, easily understandable domain name, and vice versa.
 
-[TABLE OF CONTENTS](#table-of-contents)
+:arrow_right_hook: [TABLE OF CONTENTS](#table-of-contents)
 
 # USER DATAGRAM PROTOCOL (UDP)
 
-... [TABLE OF CONTENTS](#table-of-contents)
+:arrow_right_hook: [TABLE OF CONTENTS](#table-of-contents)
 
 # TRANSMISSION CONTROL PROTOCOL (TCP)
 
@@ -466,7 +468,7 @@ connection -> session -> knowledge between C/S -> memory -> state -> hs required
 - ordered packages
 - guaranteed delivery
 
-... [TABLE OF CONTENTS](#table-of-contents)
+:arrow_right_hook: [TABLE OF CONTENTS](#table-of-contents)
 
 # UNIX SOCKET PROGRAMMING
 
@@ -633,6 +635,8 @@ There are a lot more options that can be specified, please take a look at the [R
 
 ### `netcat`
 
+:arrow_right_hook: [TABLE OF CONTENTS](#table-of-contents)
+
 # REFERENCES
 
 #### OSI Model:
@@ -676,3 +680,5 @@ There are a lot more options that can be specified, please take a look at the [R
 - [Unix domain socket](https://en.wikipedia.org/wiki/Unix_domain_socket)
 - [Unix Socket Tutorial](https://www.tutorialspoint.com/unix_sockets/index.htm)
 - [Inter-process communication](https://en.wikipedia.org/wiki/Inter-process_communication)
+
+:arrow_right_hook: [TABLE OF CONTENTS](#table-of-contents)
