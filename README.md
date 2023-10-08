@@ -450,7 +450,41 @@ When the DHCP server receives the `DHCPREQUEST` message from the client, the con
 
 ### Domain Name System (DNS)
 
+Humans access information online through domain names, like nytimes.com or espn.com. Web browsers interact through Internet Protocol (IP) addresses. DNS translates domain names to IP addresses so browsers can load Internet resources.
+
+Each device connected to the Internet has a unique IP address which other machines use to find the device. DNS servers eliminate the need for humans to memorize IP addresses such as 192.168.1.1 (in IPv4), or more complex newer alphanumeric IP addresses such as 2400:cb00:2048:1::c629:d7a2 (in IPv6).
+
 When users search for a domain name or Uniform Resource Locator (URL), they use an alphabetical name. Computers, on the other hand, use the numerical IP address to associate the domain name with a server. To connect the two, a Domain Name System (DNS) server is used to translate an IP address from a confusing string of numbers into a more readable, easily understandable domain name, and vice versa.
+
+Once the DNS server finds the correct IP address, browsers take the address and use it to send data to content delivery network (CDN) edge servers or origin servers. Once this is done, the information on the website can be accessed by the user. The DNS server starts the process by finding the corresponding IP address for a website’s uniform resource locator (URL).
+
+#### DNS Operation
+
+In a usual DNS query, the URL typed in by the user has to go through four servers for the IP address to be provided. The four servers work with each other to get the correct IP address to the client, and they include:
+
+- _**DNS Recursor**_
+
+Also referred to as a DNS resolver, it is a server designed to receive queries from client machines through applications such as web browsers. It is responsible for communicating with other DNS servers (root nameservers, top-level domain (TLD) nameservers, and authoritative nameservers) to find the right IP address.
+
+- _**Root nameserver**_
+
+It is the first step in translating (resolving) human readable host names into IP addresses. Typically, it serves as a reference to other more specific locations.
+
+- _**Top Level Domain (TLD) nameserver**_
+
+This server is responsible for hosting the last portion of a hostname (In example.com, the TLD server is “com”).
+
+- _**Authoritative nameserver**_
+
+An authoritative nameserver is what gives you the real answer to your DNS query, it is the last stop in the nameserver query. If the authoritative name server has access to the requested record, it will return the IP address for the requested hostname back to the DNS Recursor that made the initial request.
+
+#### Authoritative DNS Server
+
+It is the server that actually holds, and is responsible for, DNS resource records. This is the server at the bottom of the DNS lookup chain that will respond with the queried resource record. An authoritative nameserver can satisfy queries from its own data without needing to query another source, as it is the final source of truth for certain DNS records.
+
+#### Recursive DNS Resolver
+
+It is the computer that responds to a recursive request from a client and tracks down the DNS record. It does this by making a series of requests until it reaches the authoritative DNS nameserver for the requested record (or times out or returns an error if no record is found). Recursive DNS resolvers uses caching mechanisms to not always need to make multiple requests in order to track down the records needed to respond to a client.
 
 :arrow_right_hook: [TABLE OF CONTENTS](#table-of-contents)
 
@@ -671,7 +705,9 @@ There are a lot more options that can be specified, please take a look at the [R
 
 #### Domain Name System - DNS:
 
--[Domain Name System - Wikipedia](https://en.wikipedia.org/wiki/Domain_Name_System) -[What is DNS? | How DNS works - Cloudfare](https://www.cloudflare.com/learning/dns/what-is-dns/)
+- [Domain Name System - Wikipedia](https://en.wikipedia.org/wiki/Domain_Name_System)
+- [What is DNS? | How DNS works - Cloudfare](https://www.cloudflare.com/learning/dns/what-is-dns/)
+- [What Is DNS (Domain Name System)? - Fortinet](https://www.fortinet.com/resources/cyberglossary/what-is-dns)
 
 #### Socket Programming:
 
