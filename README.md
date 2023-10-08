@@ -380,23 +380,37 @@ The ICMP packet is encapsulated in an IPv4 packet. The packet consists of header
 
 ### Address Resolution Protocol (ARP)
 
-Address Resolution Protocol (ARP) is a protocol or procedure that connects an ever-changing Internet Protocol (IP) address to a fixed physical machine address, also known as a media access control (MAC) address, in a local-area network (LAN). The MAC address is also known as the data link layer, which establishes and terminates a connection between two physically connected devices so that data transfer can take place. The IP address is also referred to as the network layer or the layer responsible for forwarding packets of data through different routers. ARP works between these layers.
+Rquest-response protocol used to associate an Internet Protocol (IP) address to a fixed physical machine address, or media access control (MAC) address, in a local-area network (LAN). [The MAC address is part of the data link layer, which establishes and terminates a connection between two physically connected devices so that data transfer can take place. The IP address is also referred to as the network layer or the layer responsible for forwarding packets of data through different routers. ARP works between these layers.](https://www.fortinet.com/resources/cyberglossary/what-is-arp).
 
-Layer 2 protocol used to map MAC addresses to IP addresses. All hosts on a network are located by their IP address, but NICs (Network Interface Card) do not have IP addresses, they have MAC addresses. ARP is the protocol used to associate the IP address to a MAC address. We need MAC addresses to send frames (layer 2).
+    All hosts on a network are located by their IP address, but NICs (Network Interface Card) do not have IP addresses, they have MAC addresses. We need MAC addresses to send frames (layer 2).
 
-When a host wants to send a packet to another host, say IP address 10.5.5.1, on its local area network (LAN), it first sends out (broadcasts) an ARP packet. The ARP packet contains a simple question: What is the MAC address corresponding to IP address 10.5.5.1? The host that has been configured to use the IP address responds with an ARP packet containing its MAC address.
+The ARP Table is a cached `IP Address ---> MAC Address` mapping. Every time a host wants to send a packet to another host, say IP address `10.5.5.1`, on its local area network (LAN), it first verifies its ARP Table to see if the IP-to-MAC-address mapping has already been done. If so, there is no need for a new request. Otherwise, it broadcasts an ARP packet. The ARP packet contains a simple question: **What is the MAC address corresponding to IP address** `10.5.5.1`**?** Then, the host that has been configured to use the IP address `10.5.5.1` responds with an ARP packet containing its MAC address.
 
-The ARP Table is a cached `IP Address ---> MAC Address` mapping.
+#### ARP Poisoning
+
+Malicious attack in which fake ARP messages are sent to a target network aiming to link their MAC address with the IP address of a legitimate device or server within the network. This allows for data from the target's device to be sent to the attacker's computer instead of the original destination.
+
+#### Man-in-the-Middle Attacks (MITM)
+
+A man-in-the-middle (MITM) attack is a type of eavesdropping in which the cyberattacker intercepts, relays, and alters messages between two parties—who have no idea that a third party is involved—to steal information. The attacker may try to control and manipulate the messages of one of the parties, or of both, to obtain sensitive information.
+
+#### Session Hijacking
+
+Session hijacking occurs when a cyberattacker steals a user's session ID, takes over that user's web session, and masquerades as that user. With the session ID in their possession, the attacker can perform any task or activity that user is authorized to do on that network.
+
+Authentication occurs when a user tries to gain access to a system or sign in to a restricted website or web service. The session ID is stored in a cookie in the browser, and an attacker engaged in session hijacking will intercept the authentication process and intrude in real time.
+
+#### Denial-of-Service (DoS) Attack
+
+A denial-of-service (DoS) attack is one in which a cyberattacker attempts to overwhelm systems, servers, and networks with traffic to prevent users from accessing them. A larger-scale DoS attack is known as a distributed denial-of-service (DDoS) attack, where a much larger number of sources are used to flood a system with traffic.
 
 ### Dynamic Host Configuration Protocol (DHCP)
 
-..
+IP addresses, by design, are changed constantly for the simple reason that doing so gives users security and privacy. However changes on IP addresses should not be completely random. There should be rules that allocate an IP address from a defined range of numbers available in a specific network. This helps prevent issues, such as two computers receiving the same IP address. The rules are known as DHCP or Dynamic Host Configuration Protocol.
 
 ### Domain Name System (DNS)
 
-..
-
-...
+When users search for a domain name or Uniform Resource Locator (URL), they use an alphabetical name. Computers, on the other hand, use the numerical IP address to associate the domain name with a server. To connect the two, a Domain Name System (DNS) server is used to translate an IP address from a confusing string of numbers into a more readable, easily understandable domain name, and vice versa.
 
 ... [TABLE OF CONTENTS](#table-of-contents)
 
@@ -605,6 +619,7 @@ There are a lot more options that can be specified, please take a look at the [R
 
 #### Address Resolution Protocol - ARP:
 
+- [Address Resolution Protocol - Wikipedia](https://en.wikipedia.org/wiki/Address_Resolution_Protocol)
 - [What is Address Resolution Protocol (ARP)? - Fortinet](https://www.fortinet.com/resources/cyberglossary/what-is-arp)
 
 #### Socket Programming:
