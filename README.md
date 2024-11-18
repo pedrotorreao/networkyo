@@ -132,7 +132,7 @@ Logical subdivision of an IP network. It groups a set of devices within a larger
 Network device, usually a router, that serves as the routing entry point for data traffic leaving a local network and heading toward external networks or destinations. It acts as an intermediary between devices within the local network and external networks, such as the internet, by forwarding data packets to their appropriate destinations. The default gateway is typically configured with an IP address, and devices within the local network are configured to use this IP address as the route for sending data outside of their local network segment.
 
 - Networks usually consist of various hosts and a Default Gateway.
-- A can host can talk directly to another if both are in the same subnet. Otherwise, the sender sends the package to the Default Gateway, which then forwards it to the receiver.
+- A host can talk directly to another if both are in the same subnet. Otherwise, the sender sends the package to the Default Gateway, which then forwards it to the receiver.
 - Each host should know its gateway' IP address.
 
 #### Example 1 - Working with Subnets and Subnet Masks:
@@ -386,7 +386,7 @@ The ICMP packet is encapsulated in an IPv4 packet. The packet consists of header
 
 ### Address Resolution Protocol (ARP)
 
-Rquest-response protocol used to associate an Internet Protocol (IP) address to a fixed physical machine address, or media access control (MAC) address, in a local-area network (LAN). [The MAC address is part of the data link layer, which establishes and terminates a connection between two physically connected devices so that data transfer can take place. The IP address is also referred to as the network layer or the layer responsible for forwarding packets of data through different routers. ARP works between these layers.](https://www.fortinet.com/resources/cyberglossary/what-is-arp).
+Request-response protocol used to associate an Internet Protocol (IP) address to a fixed physical machine address, or media access control (MAC) address, in a local-area network (LAN). [The MAC address is part of the data link layer, which establishes and terminates a connection between two physically connected devices so that data transfer can take place. The IP address is also referred to as the network layer or the layer responsible for forwarding packets of data through different routers. ARP works between these layers.](https://www.fortinet.com/resources/cyberglossary/what-is-arp).
 
     All hosts on a network are located by their IP address, but NICs (Network Interface Card) do not have IP addresses, they have MAC addresses. We need MAC addresses to send frames (layer 2).
 
@@ -500,6 +500,259 @@ After the above steps for the DNS lookup are finished, the browser can make a HT
 :arrow_right_hook: [TABLE OF CONTENTS](#table-of-contents)
 
 # USER DATAGRAM PROTOCOL (UDP)
+
+**Layer 4**, Transport layer in the [OSI Model](#osi-model), communication protocol, i.e. _standardized method for transferring data_, which offers the ability to address processes in a host using _**ports**_. 
+
+UDP is a simple protocol that does not require prior communication and it is used across the internet for especially time-sensitive transmissions such as video playback and DNS lookups. It speeds up communications by **NOT** formally establishing a connection before data is transferred, which allows data to be transferred very quickly, but it can also cause packets/datagrams to be lost and create opportunities for exploitation in the forms of DDoS attacks. 
+
+UDP provides a way for application programs to send messages to other programs with a minimum of protocol mechanism. It is transaction oriented, and delivery and duplicate protection are not guaranteed. Packets/datagrams are sent directly to a target computer, without establishing a connection first, indicating the order of said packets, or checking whether they arrived as intended. Applications for which these features are mandatory should use the [Transmission Control Protocol (TCP)](#tcp---transmission-control-protocol).
+
+### UDP use cases
+
+- Video streaming
+- VoIP (voice over IP)
+- Online gaming
+- VPN - Virtual Private Network
+- DNS - Domain Name Server
+- WebRTC - P2P Communication
+
+### Multiplexing and demultiplexing
+
+- IP target hosts only.
+- Hosts run many apps/processes, each possibly having different requirements.
+- Ports are used in UDP to identify the app/process.
+- Sender multiplexes all of its apps/processes into UDP.
+- Receiver demultiplexes UDP datagrams to each app.
+
+### UDP Datagram
+
+- UDP Datagram Header is 8 bytes only (IPv4).
+	- 4 fields, 2 bytes each.
+- Datagrams slide into an IP packet as "data".
+- Ports are 16 bits (0 to 65535)
+- UDP Header:
+```
+                  0      7 8     15 16    23 24    31  
+                 +--------+--------+--------+--------+ 
+                 |     Source      |   Destination   | 
+                 |      Port       |      Port       | 
+                 +--------+--------+--------+--------+ 
+                 |                 |                 | 
+                 |     Length      |    Checksum     | 
+                 +--------+--------+--------+--------+ 
+                 |                                     
+                 |          data octets ...            
+                 +---------------- ...
+```
+- ***Source Port***: it is an _optional_ field which indicates the port of the sending process, and may be addressed in the absence of any other information. If not used, a value of zero is inserted.
+- ***Destination Port***: _required_ field, it identifies the receiver's destination address, including the port number.
+- ***Length***: it's the length in octets of this user datagram including the header and the data. This means that the minimum value of the length is 8, the length of the header.
+- ***Checksum***: *16-bit one's complement of the one's complement sum of a pseudo header of information from the IP header, the UDP header, and the data, padded with zero octets at the end (if necessary) to make a multiple of 2 octets*. The pseudo header conceptually prefixed to the UDP header contains the source address, the destination address, the protocol, and the UDP length. This information gives protection against misrouted datagrams. This checksum procedure is the same as is used in TCP. The checksum field may be used for error-checking of the header and data. This field is optional in IPv4, and mandatory in most cases in IPv6.
+```
+                  0      7 8     15 16    23 24    31 
+                 +--------+--------+--------+--------+
+                 |          source address           |
+                 +--------+--------+--------+--------+
+                 |        destination address        |
+                 +--------+--------+--------+--------+
+                 |  zero  |protocol|   UDP length    |
+                 +--------+--------+--------+--------+
+```
+If the computed checksum is zero, it is transmitted as all ones (the equivalent in one's complement arithmetic). An all zero transmitted checksum value means that the transmitter generated no checksum.
+
+### UDP Pros
+
+- Simple protocol.
+- Header size is small ➡️ datagrams are small.
+  - Uses less bandwidth.
+- Stateless.
+  - Consumes less memory, since no state is stored in the server/client.
+- Low latency due to the lack of features such as handshake, ordering, re-transmission and guaranteed delivery.
+
+### UDP Cons
+
+- No acknowledgement, so you don't really know whether data sent was delivered or not.
+- No guaranteed delivery.
+- Connection-less, so anyone can send data without prior knowledge.
+  - Not very secure ➡️ it can be easily spoofed.
+- No flow control.
+- No congestion control.
+- No ordered packets.
+
+
+#### Example - UDP Server in C:
+
+To compile the code below, open your terminal inside the directory where the code file is and enter the following, assuming you have a C compiler available: `g++ udp-server.c -o udps`.
+
+Then, it is just a matter of running the executable: `./udps`. To terminate the program, enter `Ctrl + C`.
+
+To talk to the server, you can run follow a similar process to run the client code in the next example, or use the [netcat](#netcat) command line tool by entering the following commands in your terminal:
+```
+nc -u ip port  [Enter]
+your_message   [Enter]
+```
+For example, `nc -u 127.0.0.1 5550`. After running this command, everything you type next is data that will be sent to the server.
+
+```c
+// inspired by: https://github.com/nikhilroxtomar/UDP-Client-Server-Program-in-C
+// -----------------------------------------------------------------------------
+
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+
+int main(int argc, char **argv) {
+  // port number to be connected to.
+  // note: All ports below 1024 are reserved, so we can set a port above 1024
+  // and below 65535 unless they are being used by other programs.
+  int port = 5550;
+  // integer that will represent the file descriptor for the socket:
+  int sockfd;
+  // structures describing the socket addresses:
+  struct sockaddr_in myaddr, remoteAddr;
+  // buffer where the message will be stored:
+  char buffer[1024];
+
+  socklen_t addr_size;
+
+  // create a new datagram (UDP) socket:
+  sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+
+  // initialize the structure variables to NULL:
+  memset(&myaddr, '\0', sizeof(myaddr));
+
+  myaddr.sin_family = AF_INET;   // address family.
+  myaddr.sin_port = htons(port); // get the 16-bit port # in network byte order
+                                 // from the host byte order.
+  // 32-bit IP addr. in Network Byte Order:
+  myaddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+  // assign a local protocol address to a socket:
+  bind(sockfd, (struct sockaddr *)&myaddr, sizeof(myaddr));
+
+  addr_size = sizeof(remoteAddr);
+
+  while (1) {
+    // receive data from UNCONNECTED datagram sockets:
+    recvfrom(sockfd, buffer, 1024, 0, (struct sockaddr *)&remoteAddr, &addr_size);
+
+    if (buffer[0] == '#')
+      break;
+
+    printf("\n-- Buffer content: %s\n-- From: %d\n", buffer, remoteAddr.sin_addr.s_addr);
+
+    memset(buffer, '\0', sizeof buffer);
+  }
+
+  return 0;
+}
+```
+#### Example - UDP Client in C:
+
+To compile this code, execute the following command in your terminal:
+```
+g++ udp-client.c -o udpc
+```
+Then, run the executable passing the port number as argument. For port number `5550`:
+```
+./udpc 5550
+```
+
+
+```c
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+
+/*
+--> argc - argument count:
+      Number of command line arguments that are passed to the main() function, number of strings pointed to by argv.
+--> argv- argument vector:
+      Array of string arguments.
+        argv[0]: it is always the name of the program.
+        argv[1...n]: string arguments themselves.
+*/
+int main(int argc, char **argv) {
+  if (argc != 2) {
+    printf("Usage: %s <port>\n", argv[0]);
+    exit(0);
+  }
+  // port number passed as argument:
+  int port = atoi(argv[1]);
+  // integer that will represent the file descriptor for the socket:
+  int sockfd;
+  // structures describing the socket addresses:
+  struct sockaddr_in serverAddr;
+  // buffer where the message will be stored:
+  char buffer[1024];
+
+  socklen_t addr_size;
+
+  // create a new datagram (UDP) socket:
+  sockfd = socket(PF_INET, SOCK_DGRAM, 0);
+
+  // initialize the structure variables to NULL:
+  memset(&serverAddr, '\0', sizeof(serverAddr));
+
+  serverAddr.sin_family = AF_INET;   // address family.
+  serverAddr.sin_port = htons(port); // get the 16-bit port # in network byte order
+                                     // from the host byte order.
+
+  // 32-bit IP addr. in Network Byte Order:
+  serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+
+
+  while (1) {
+    char *message;
+    size_t m_size = 1024;
+    size_t m_chars;
+
+    message = (char *)malloc(m_size * sizeof(char));
+
+    if (message == NULL) {
+      perror("Unable to allocate buffer\n");
+      exit(1);
+    }
+
+    printf(">>:: ");
+
+    m_chars = getline(&message, &m_size, stdin);
+
+    // copy message to be sent into the buffer:
+    strcpy(buffer, message);
+    // if a '#' is entered, break out of the message loop:
+    if (buffer[0] == '#')
+      break;
+
+    // send data over UNCONNECTED datagram sockets:
+    sendto(sockfd, buffer, 1024, 0, (struct sockaddr *)&serverAddr, sizeof(serverAddr));
+    printf("[+]Data Sent: %s", buffer);
+
+    // clear the buffer for the next message:
+    memset(buffer, '\0', sizeof buffer);
+
+    // free heap allocated memory:
+    free(message);
+    message = NULL;
+  }
+
+  return 0;
+}
+```
+
+### UDP vs. TCP
+
+UDP is faster, but less reliable than TCP. In TCP communication, the two computers begin by establishing a connection via an automated process called a "handshake". Only once this handshake is completed will one computer actually transfer data packets to the other. UDP is a connectionless protocol, so communications do not go through this process, but one computer can simply begin sending data to the other. Since it does not require a handshake or check whether data has arrived properly, UDP is able to transfer data much faster than TCP. Time-sensitive applications often use UDP because dropping packets is preferable to waiting for packets delayed due to retransmission, which may not be an option in a real-time system.
+
+In addition, TCP indicates the order in which data packets should be received and confirm that packets arrive as intended. If a packet does not arrive (e.g. due to network congestion), TCP requires that it be re-sent. UDP does not include any of this functionality, therefore, applications which use UDP must be able to tolerate errors, loss, and duplication.
 
 :arrow_right_hook: [TABLE OF CONTENTS](#table-of-contents)
 
@@ -678,6 +931,10 @@ There are a lot more options that can be specified, please take a look at the [R
 
 ### `tcpdump`
 
+Data-network packet analyzer computer program that runs under a command line interface. It allows the user to display TCP/IP and other packets being transmitted or received over a network to which the computer is attached. `tcpdump` prints the contents of network packets. It can read packets from a network interface card or from a previously created saved packet file. tcpdump can write packets to standard output or a file.
+
+It is also possible to use tcpdump for the specific purpose of intercepting and displaying the communications of another user or computer. A user with the necessary privileges on a system acting as a router or gateway through which unencrypted traffic such as Telnet or HTTP passes can use tcpdump to view login IDs, passwords, the URLs and content of websites being viewed, or any other unencrypted information.
+
 ### `netcat`
 
 :arrow_right_hook: [TABLE OF CONTENTS](#table-of-contents)
@@ -698,11 +955,6 @@ There are a lot more options that can be specified, please take a look at the [R
 
 - [RFC 792](https://www.rfc-editor.org/rfc/rfc792)
 - [ICMP - Wikipedia](https://en.wikipedia.org/wiki/Internet_Control_Message_Protocol)
-- [ping (networking utility) - Wikipedia](<https://en.wikipedia.org/wiki/Ping_(networking_utility)>)
-- [IT Explained: Ping - Paessler](https://www.paessler.com/it-explained/ping)
-- [Linux Ping Command Examples - phoenixNAP](https://phoenixnap.com/kb/linux-ping-command-examples)
-- [traceroute - Wikipedia](https://en.wikipedia.org/wiki/Traceroute)
-- [Traceroute command and its options - ClouDNS](https://www.cloudns.net/blog/traceroute-command-tracert/)
 
 #### Address Resolution Protocol - ARP:
 
@@ -720,6 +972,14 @@ There are a lot more options that can be specified, please take a look at the [R
 - [What is DNS? | How DNS works - Cloudfare](https://www.cloudflare.com/learning/dns/what-is-dns/)
 - [What Is DNS (Domain Name System)? - Fortinet](https://www.fortinet.com/resources/cyberglossary/what-is-dns)
 
+
+#### User Datagram Protocol - UDP:
+
+- [RFC 768](https://www.ietf.org/rfc/rfc768.txt)
+- [What is UDP?](https://www.cloudflare.com/learning/ddos/glossary/user-datagram-protocol-udp/)
+- [User Datagram Protocol](https://en.wikipedia.org/wiki/User_Datagram_Protocol)
+- [Computer Networks (for Introduction)](https://en.wikipedia.org/wiki/Computer_network)
+
 #### Socket Programming:
 
 - [Socket Programming in Python (Guide)](https://realpython.com/python-sockets/)
@@ -727,5 +987,25 @@ There are a lot more options that can be specified, please take a look at the [R
 - [Unix domain socket](https://en.wikipedia.org/wiki/Unix_domain_socket)
 - [Unix Socket Tutorial](https://www.tutorialspoint.com/unix_sockets/index.htm)
 - [Inter-process communication](https://en.wikipedia.org/wiki/Inter-process_communication)
+
+#### ping:
+
+- [ping (networking utility) - Wikipedia](<https://en.wikipedia.org/wiki/Ping_(networking_utility)>)
+- [IT Explained: Ping - Paessler](https://www.paessler.com/it-explained/ping)
+- [Linux Ping Command Examples - phoenixNAP](https://phoenixnap.com/kb/linux-ping-command-examples)
+
+#### traceroute:
+
+- [traceroute - Wikipedia](https://en.wikipedia.org/wiki/Traceroute)
+- [Traceroute command and its options - ClouDNS](https://www.cloudns.net/blog/traceroute-command-tracert/)
+
+#### tcpdump:
+
+- [tcpdump - Wikipedia](https://en.wikipedia.org/wiki/Tcpdump)
+- [An introduction to using tcpdump at the Linux command line - Opensource](https://opensource.com/article/18/10/introduction-tcpdump)
+- [Let's learn tcpdump! - Julia Evans](https://wizardzines.com/zines/tcpdump/)
+- [tcpdump for Dummies - Alexander Sandler](http://www.alexonlinux.com/tcpdump-for-dummies)
+- [A tcpdump Tutorial with Examples - Daniel Miessler](https://danielmiessler.com/p/tcpdump/)
+- [tcpdump(1) man page](https://www.tcpdump.org/manpages/tcpdump.1.html)
 
 :arrow_right_hook: [TABLE OF CONTENTS](#table-of-contents)
