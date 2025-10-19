@@ -117,17 +117,17 @@ The Internet Protocol (IP) is a Layer 3 protocol which can be defined as a set o
   - _Autoconfiguration_: includes built-in support for stateless address autoconfiguration, simplifying the process of assigning IP addresses to devices.
   - _Security_: improved security features compared to IPv4, including built-in IPsec support for secure communication.
 
-### Subnets
+## Subnets
 
 Logical subdivision of an IP network. It groups a set of devices within a larger IP network into smaller, isolated segments. Devices within a subnet can communicate directly with each other without the need for routing.
 
     SUBNET = (IP address) & (SUBNET MASK)
 
-### Subnet Mask
+## Subnet Mask
 
 32-bit numeric address that divides an IP address into a network portion and a host portion. It determines which part of an IP address belongs to the network and which part belongs to the specific device within that network. When a device wants to communicate with another device on the same subnet, it checks if the destination IP address falls within the same network segment. This check is done by applying a bitwise AND operation between the IP address and the subnet mask. If the result matches the network address of the sender, the destination is on the same subnet.
 
-### Default Gateway
+## Default Gateway
 
 Network device, usually a router, that serves as the routing entry point for data traffic leaving a local network and heading toward external networks or destinations. It acts as an intermediary between devices within the local network and external networks, such as the internet, by forwarding data packets to their appropriate destinations. The default gateway is typically configured with an IP address, and devices within the local network are configured to use this IP address as the route for sending data outside of their local network segment.
 
@@ -135,7 +135,7 @@ Network device, usually a router, that serves as the routing entry point for dat
 - A host can talk directly to another if both are in the same subnet. Otherwise, the sender sends the package to the Default Gateway, which then forwards it to the receiver.
 - Each host should know its gateway' IP address.
 
-#### Example 1 - Working with Subnets and Subnet Masks:
+### Example 1 - Working with Subnets and Subnet Masks:
 
 Consider the IP address `192.168.254.0/24`:
 
@@ -144,7 +144,7 @@ Consider the IP address `192.168.254.0/24`:
 - This arrangement will give us `2^24 = 16777216` possible networks, each having `2^8 = 256` hosts.
 - `192.168.254.0/24` is also called a **SUBNET** and this subnet has the **SUBNET MASK** `255.255.255.0`.
 
-#### Example 2 - Working with Subnets and Subnet Masks:
+### Example 2 - Working with Subnets and Subnet Masks:
 
 Consider the following network configuration with the subnet mask `255.255.255.0`.
 
@@ -175,7 +175,7 @@ b. Host **A** (`192.168.1.3`) wants to talk to host **E** (`192.168.2.2`):
 
 > TIP: if you application and its database are in different subnets, the IP packets containing your SQL queries will always need to go through the router which, if congested, will possibly cause delays.
 
-### IP Packet Structure
+## IP Packet Structure
 
 An IP packet consists of a **header** section and a **data** section. The IP **header** is usually `20` bytes, but it can go up to `60` bytes in case options are enabled. The `data ` section can go up to `65515` bytes. It has no data checksum or any other footer after the data section. Typically the Data Link Layer encapsulates IP packets in frames with a CRC footer that detects most errors, many transport-layer protocols carried by IP also have their own error checking.
 
@@ -189,109 +189,77 @@ How it actually looks like:
 
 _Source: [Michel Bakni - Postel, J. (September 1981) RFC 791, Internet Protocol, DARPA Internet Program Protocol Specification, The Internet Society](https://commons.wikimedia.org/w/index.php?curid=79949694)_
 
-#### IP Packet Header
+### IP Packet Header
 
 The IPv4 packet header consists of `14` fields, of which `13` are required. The 14th field is optional and the reason why the IPv4 header is variable in size. The fields in the header are packed with the most significant byte first (network byte order). So, the most significant bit is numbered 0.
 
-- **_Version_**:
-  ```
-  The first header field in an IP packet is the four-bit version field. For IPv4, this is always equal to 4. For IPv6, it is always equal to 6.
-  ```
-- **_IHL_** - Internet Header Length:
-  ```
-  The IHL field is a 4-bit field containing the size of the IPv4 header. Its 4 bits specify the number of 32-bit words in the header. The minimum value for this field is 5, when no options are specified, which indicates a length of 5 × 32 bits = 160 bits = 20 bytes. As a 4-bit field, the maximum value is 15; this means that the maximum size of the IPv4 header is 15 × 32 bits = 480 bits = 60 bytes.
-  ```
-- **_DSCP_** - Differentiated Services Code Point:
+#### **_Version_**:
 
-  ```
-  It specifies differentiated services (DiffServ). Real-time data streaming makes use of the DSCP field. An example is Voice over IP (VoIP), which is used for interactive voice services.
+The first header field in an IP packet is the four-bit version field. For IPv4, this is always equal to 4. For IPv6, it is always equal to 6.
+  
+#### **_IHL_** - Internet Header Length:
 
-  ```
+The IHL field is a 4-bit field containing the size of the IPv4 header. Its 4 bits specify the number of 32-bit words in the header. The minimum value for this field is 5, when no options are specified, which indicates a length of 5 × 32 bits = 160 bits = 20 bytes. As a 4-bit field, the maximum value is 15; this means that the maximum size of the IPv4 header is 15 × 32 bits = 480 bits = 60 bytes.
 
-- **_ECN_** - Explicit Congestion Notification:
+#### **_DSCP_** - Differentiated Services Code Point:
 
-  ```
-  This field allows end-to-end notification of network congestion without dropping packets. ECN is an optional feature available when both endpoints support it and effective when also supported by the underlying network.
-  ```
+It specifies differentiated services (DiffServ). Real-time data streaming makes use of the DSCP field. An example is Voice over IP (VoIP), which is used for interactive voice services.
 
-- _**Total length**_:
 
-  ```
-  This 16-bit field defines the entire packet size in bytes, including header and data. The minimum size is 20 bytes (header without data) and the maximum is 65535 bytes.
-  ```
+#### **_ECN_** - Explicit Congestion Notification:
 
-- _**Identification**_:
+This field allows end-to-end notification of network congestion without dropping packets. ECN is an optional feature available when both endpoints support it and effective when also supported by the underlying network.
 
-  ```
-  Identification field primarily used for uniquely identifying the group of fragments of a single IP datagram.
-  ```
+#### _**Total length**_:
 
-- _**Flags**_:
+This 16-bit field defines the entire packet size in bytes, including header and data. The minimum size is 20 bytes (header without data) and the maximum is 65535 bytes.
 
-  ```
-  A three-bit field used to control or identify fragments. They are (in order, from most significant to least significant):
-      bit 0: Reserved; must be zero.
-      bit 1: Don't Fragment (DF).
-        --> If the DF flag is set and fragmentation is required to route the packet,
-            then the packet is dropped. This can be used when sending packets to a host
-            that does not have resources to perform reassembly of fragments. It can also
-            be used for path MTU discovery, either automatically by the host IP
-            software, or manually using diagnostic tools such as ping or traceroute.
-      bit 2: More Fragments (MF)
-        --> The MF flag is cleared for unfragmented packets. For fragmented packets,
-            all fragments except the last have the MF flag set. The last fragment has a
-            non-zero Fragment Offset field, differentiating it from an unfragmented
-            packet.
-  ```
+#### _**Identification**_:
 
-- _**Fragment offset**_:
+Identification field primarily used for uniquely identifying the group of fragments of a single IP datagram.
 
-  ```
-  This field specifies the offset of a particular fragment relative to the beginning of the original unfragmented IP datagram. The fragmentation offset value for the first fragment is always 0.
-  ```
+#### _**Flags**_:
 
-- _**TTL**_ - Time To Live:
+A three-bit field used to control or identify fragments. They are (in order, from most significant to least significant): 
+- BIT 0: Reserved; must be zero.
+- BIT 1: Don't Fragment (DF).
+	- If the DF flag is set and fragmentation is required to route the packet, then the packet is dropped. This can be used when sending packets to a host that does not have resources to perform reassembly of fragments. It can also be used for path MTU discovery, either automatically by the host IP software, or manually using diagnostic tools such as ping or traceroute.
+- BIT 2: More Fragments (MF)
+	- The MF flag is cleared for unfragmented packets. For fragmented packets, all fragments except the last have the MF flag set. The last fragment has a non-zero Fragment Offset field, differentiating it from an unfragmented packet.
 
-  ```
-  An 8-bit time to live field limits a datagram's lifetime to prevent network failure in the event of a routing loop. It is specified in seconds, but time intervals less than 1 second are rounded up to 1. In practice, the field is used as a hop count—when the datagram arrives at a router, the router decrements the TTL field by one. When the TTL field hits zero, the router discards the packet and typically sends an ICMP time exceeded message to the sender.
-  ```
+#### _**Fragment offset**_:
 
-- _**Protocol**_:
+This field specifies the offset of a particular fragment relative to the beginning of the original unfragmented IP datagram. The fragmentation offset value for the first fragment is always 0.
 
-  ```
-  This field defines the protocol used in the data portion of the IP datagram. Some examples:
-      1:  Internet Message Protocol (ICMP)
-      6:  Transmission Control Protocol (TCP)
-      17: User Datagram Protocol (UDP)
-  ```
+#### _**TTL**_ - Time To Live:
 
-- _**Header checksum**_:
+An 8-bit time to live field limits a datagram's lifetime to prevent network failure in the event of a routing loop. It is specified in seconds, but time intervals less than 1 second are rounded up to 1. In practice, the field is used as a hop count—when the datagram arrives at a router, the router decrements the TTL field by one. When the TTL field hits zero, the router discards the packet and typically sends an ICMP time exceeded message to the sender.
 
-  ```
-  This 16-bit field is used for error-checking of the header. When a packet arrives at a router, the router calculates the checksum of the header and compares it to the checksum field. If the values do not match, the router discards the packet.
+#### _**Protocol**_:
 
-  When a packet arrives at a router, the router decreases the TTL field in the header. Consequently, the router must calculate a new header checksum. The checksum field is the 16 bit one's complement of the one's complement sum of all 16 bit words in the header. For purposes of computing the checksum, the value of the checksum field is zero.
-  ```
+This field defines the protocol used in the data portion of the IP datagram. Some examples:
+- 1:  Internet Message Protocol (ICMP)
+- 6:  Transmission Control Protocol (TCP)
+- 17: User Datagram Protocol (UDP)
 
-- _**Source address**_:
+#### _**Header checksum**_:
 
-  ```
-  This 32-bit field is the IPv4 address of the sender of the packet. It may be changed in transit by network address translation (NAT).
-  ```
+This 16-bit field is used for error-checking of the header. When a packet arrives at a router, the router calculates the checksum of the header and compares it to the checksum field. If the values do not match, the router discards the packet.
 
-- _**Destination address**_:
+When a packet arrives at a router, the router decreases the TTL field in the header. Consequently, the router must calculate a new header checksum. The checksum field is the 16 bit one's complement of the one's complement sum of all 16 bit words in the header. For purposes of computing the checksum, the value of the checksum field is zero.
 
-  ```
-  This 32-bit field is the IPv4 address of the receiver of the packet. It may be affected by NAT.
-  ```
+#### _**Source address**_:
 
-- _**Options**_:
+This 32-bit field is the IPv4 address of the sender of the packet. It may be changed in transit by network address translation (NAT).
 
-  ```
-  The options field is not often used. Packets containing some options may be considered as dangerous by some routers and be blocked.
-  ```
+#### _**Destination address**_:
+This 32-bit field is the IPv4 address of the receiver of the packet. It may be affected by NAT.
 
-#### IP Packet Data
+#### _**Options**_:
+
+The options field is not often used. Packets containing some options may be considered as dangerous by some routers and be blocked.
+
+### IP Packet Data
 
 The content of the IP packet data is interpreted based on the value set for the _**Protocol**_ field in the IP header. Some examples are:
 
@@ -301,25 +269,22 @@ The content of the IP packet data is interpreted based on the value set for the 
 
 The packet payload is not included in the checksum. Its contents are interpreted based on the value of the Protocol header field.
 
-- _**Fragmentation**_:
+#### _**Fragmentation**_:
 
-  ```
-  Networks with different hardware usually vary not only in transmission speed, but also in the maximum transmission unit (MTU). Therefore, when one network wants to transmit datagrams to a network with a smaller MTU, it may fragment its datagrams.
+Networks with different hardware usually vary not only in transmission speed, but also in the maximum transmission unit (MTU). Therefore, when one network wants to transmit datagrams to a network with a smaller MTU, it may fragment its datagrams.
 
   When a router receives a packet, it examines the destination address and determines the outgoing interface to use and that interface's MTU. If the packet size is bigger than the MTU, and the Do not Fragment (DF) bit in the packet's header is set to 0, i.e. fragmentation is allowed, then the router may fragment the packet.
-  ```
 
-- _**Reassembly**_:
+#### _**Reassembly**_:
 
-  ```
-  A receiver knows that a packet is a fragment, if at least one of the following conditions is true:
-    - The flag more fragments (MF) is set, which is true for all fragments except the last.
-    - The field fragment offset is nonzero, which is true for all fragments except the first.
+A receiver knows that a packet is a fragment, if at least one of the following conditions is true:
+- The flag more fragments (MF) is set, which is true for all fragments except the last.
+- The field fragment offset is nonzero, which is true for all fragments except the first.
 
   The receiver identifies matching fragments using the source and destination addresses, the protocol ID, and the identification field. The receiver reassembles the data from fragments with the same ID using both the fragment offset and the more fragments flag.
-  ```
 
-### Internet Control Message Protocol (ICMP)
+
+## Internet Control Message Protocol (ICMP)
 
 Supporting protocol used by network devices (e.g. routers) to send error messages and operational information indicating success or failure when communicating with other IP addresses. However, unlike transport protocols like TCP and UDP, ICMP is not typically used to exchange data between systems nor used by end-user network applications.
 
@@ -332,50 +297,43 @@ ICMP is used as the basis for diagnostic tools such as [`ping`](#ping) and [`tra
 
 ICMP is a network-layer protocol, this makes it layer 3 protocol by the 7 layer [**OSI model**](#osi-model-open-systems-interconnection). This way, there is no TCP or UDP port number associated with ICMP packets as these numbers are associated with the transport layer above.
 
-#### ICMP Packet Header
+### ICMP Packet Header
 
 The ICMP packet is encapsulated in an IPv4 packet. The packet consists of header and content sections. See a simplified example below:
 
 ![icmp header packet](images/networking_ipv4_icmp_packet.png)
 
-- _**Type**_:
+#### _**Type**_:
 
-  ```
-  First octet of the data portion. Its value determines the format of the remaining data and which kind of control messages will be sent. See examples below:
-    0- Echo Reply
-    3- Destination Unreachable
-    5- Redirect Message
-    8- Echo Request
-    11- Time Exceeded
-    30- Traceroute
+First octet of the data portion. Its value determines the format of the remaining data and which kind of control messages will be sent. See examples below:
+- 0- Echo Reply
+- 3- Destination Unreachable
+- 5- Redirect Message
+- 8- Echo Request
+- 11- Time Exceeded
+- 30- Traceroute
 
-  ```
 
-- _**Code**_:
+#### _**Code**_:
 
-  ```
-  The Code field represents an ICMP subtype. Given the value in the Type field, the Code gives additional context information for the message. See examples below:
-      - Type = 3 - Destination Unreachable:
-          - Code = 0: Destination network unreachable
-          - Code = 3: Destination port unreachable
-          - Code = 4: Fragmentation required, and DF (Don't Fragment) flag set
+The Code field represents an ICMP subtype. Given the value in the Type field, the Code gives additional context information for the message. See examples below:
+- Type = 3 - Destination Unreachable:
+	- Code = 0: Destination network unreachable
+	- Code = 3: Destination port unreachable
+	- Code = 4: Fragmentation required, and DF (Don't Fragment) flag set
 
-      - Type = 11 - Time Exceeded:
-          - Code = 0: TTL expired in transit
-          - Code = 1: Fragment reassembly time exceeded
-  ```
+- Type = 11 - Time Exceeded:
+	- Code = 0: TTL expired in transit
+	- Code = 1: Fragment reassembly time exceeded
 
-- _**Checksum**_:
+#### _**Checksum**_:
 
-  ```
-  Checksum for error checking, calculated from the ICMP header and data with value 0 substituted for this field.
-  ```
+Checksum for error checking, calculated from the ICMP header and data with value 0 substituted for this field.
 
-- _**Content/Rest of header**_:
+#### _**Content/Rest of header**_:
 
-  ```
-  ICMP error messages contain a data section that includes a copy of the entire IPv4 header, plus at least the first eight bytes of data from the IPv4 packet that caused the error message. This data is used by the host to match the message to the appropriate process.
-  ```
+ICMP error messages contain a data section that includes a copy of the entire IPv4 header, plus at least the first eight bytes of data from the IPv4 packet that caused the error message. This data is used by the host to match the message to the appropriate process.
+
 
 **Note**:
 
@@ -388,7 +346,8 @@ The ICMP packet is encapsulated in an IPv4 packet. The packet consists of header
 
 Request-response protocol used to associate an Internet Protocol (IP) address to a fixed physical machine address, or media access control (MAC) address, in a local-area network (LAN). [The MAC address is part of the data link layer, which establishes and terminates a connection between two physically connected devices so that data transfer can take place. The IP address is also referred to as the network layer or the layer responsible for forwarding packets of data through different routers. ARP works between these layers.](https://www.fortinet.com/resources/cyberglossary/what-is-arp).
 
-    All hosts on a network are located by their IP address, but NICs (Network Interface Card) do not have IP addresses, they have MAC addresses. We need MAC addresses to send frames (layer 2).
+    All hosts on a network are located by their IP address, but NICs (Network Interface Card) do not have IP addresses, 
+	they have MAC addresses. We need MAC addresses to send frames (layer 2).
 
 The ARP Table is a cached `IP Address ---> MAC Address` mapping. Every time a host wants to send a packet to another host, say IP address `10.5.5.1`, on its local area network (LAN), it first verifies its ARP Table to see if the IP-to-MAC-address mapping has already been done. If so, there is no need for a new request. Otherwise, it broadcasts an ARP packet. The ARP packet contains a simple question: **What is the MAC address corresponding to IP address** `10.5.5.1`**?** Then, the host that has been configured to use the IP address `10.5.5.1` responds with an ARP packet containing its MAC address.
 
